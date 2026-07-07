@@ -1,0 +1,8 @@
+{
+  "name": "Gestão Culto Profético ICM",
+  "description": "Sistema completo de gestão para Igreja Cristã Maranata",
+  "requestFramePermissions": [
+    "microphone"
+  ],
+  "majorCapabilities": []
+}

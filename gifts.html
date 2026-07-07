@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR" translate="no">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registro de Dons - ICM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <style>
+      body { 
+        font-family: 'Inter', sans-serif; 
+        background-color: #f8fafc; 
+        color: #1e293b; 
+      }
+    </style>
+  </head>
+  <body>
+    <div class="min-h-screen bg-slate-50 flex flex-col items-center pt-8 pb-12 px-4">
+      <h1 class="text-3xl font-bold text-[#8f1919] mb-6 uppercase">Registro de Dons</h1>
+
+      <div class="bg-white rounded-3xl shadow-xl w-full max-w-2xl p-6 md:p-8 space-y-6">
+        
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <button 
+              id="cat-sonho" 
+              class="py-3 px-4 rounded-xl font-bold text-xs border uppercase text-center transition-all bg-red-50 text-red-700 border-red-200"
+            >
+              Sonho
+            </button>
+            <button 
+              id="cat-visao" 
+              class="py-3 px-4 rounded-xl font-bold text-xs border uppercase text-center transition-all bg-slate-50 text-slate-500 border-slate-200"
+            >
+              Visão
+            </button>
+            <button 
+              id="cat-revelacao" 
+              class="py-3 px-4 rounded-xl font-bold text-xs border uppercase text-center transition-all bg-slate-50 text-slate-500 border-slate-200"
+            >
+              Revelação
+            </button>
+            <button 
+              id="cat-outros" 
+              class="py-3 px-4 rounded-xl font-bold text-xs border uppercase text-center transition-all bg-slate-50 text-slate-500 border-slate-200"
+            >
+            Outros
+            </button>
+          </div>
+
+        <div id="custom-category-container" class="hidden mt-2 mb-2">
+          <label class="text-xs font-bold text-slate-500 block mb-1">Digite aqui o Título</label>
+          <input 
+            type="text" 
+            id="gift-custom-category" 
+            placeholder="Ex: Palavra, Escala, Anotações..." 
+            class="w-full bg-white border border-slate-300 text-slate-600 rounded-lg p-3 outline-none focus:ring-2 focus:ring-slate-400 text-sm uppercase"
+          />
+        </div>
+
+        <div class="space-y-4 pt-2">
+          
+          <div>
+            <label class="text-xs font-bold text-[#cf2a2a] block mb-1">Nome da Igreja (opcional):</label>
+            <input 
+              type="text" 
+              id="gift-church" 
+              placeholder="Ex: Planalto Linhares" 
+              class="w-full bg-white border border-[#fca5a5] text-slate-600 rounded-lg p-3 outline-none focus:ring-2 focus:ring-red-200 text-sm"
+            />
+          </div>
+
+          <div class="flex items-center gap-2">
+            <input type="checkbox" id="gift-include-date" checked class="w-4 h-4 accent-[#0ea5e9] rounded cursor-pointer" />
+            <label class="text-xs font-bold text-[#cf2a2a] cursor-pointer" for="gift-include-date">Incluir data na imagem</label>
+          </div>
+
+          <div>
+            <label class="text-xs font-bold text-[#cf2a2a] block mb-1">Escolher data:</label>
+            <input 
+              type="date" 
+              id="gift-date" 
+              class="w-full bg-white border border-[#fca5a5] text-slate-600 rounded-lg p-3 outline-none focus:ring-2 focus:ring-red-200 text-sm uppercase"
+            />
+          </div>
+
+          <div class="space-y-3 py-2">
+            <div class="flex items-center gap-2">
+              <input type="checkbox" id="gift-justify-text" class="w-4 h-4 border-slate-300 rounded cursor-pointer" />
+              <i class="fas fa-align-justify text-[#cf2a2a] text-sm"></i>
+              <label class="text-xs font-bold text-[#cf2a2a] cursor-pointer" for="gift-justify-text">Texto justificado</label>
+            </div>
+            
+            <div class="flex items-center gap-2">
+              <input type="checkbox" id="gift-vertical-image" class="w-4 h-4 border-slate-300 rounded cursor-pointer" />
+              <label class="text-xs font-bold text-[#cf2a2a] cursor-pointer" for="gift-vertical-image">Imagem vertical (melhor para celular)</label>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-center gap-4 py-2">
+            <label class="text-xs font-bold text-[#cf2a2a]">Tamanho da fonte:</label>
+            <button id="btn-font-minus" class="w-6 h-6 rounded-full bg-[#fce8e8] text-[#cf2a2a] flex items-center justify-center font-bold hover:bg-red-200 transition-colors">
+              <i class="fas fa-minus text-[10px]"></i>
+            </button>
+            <span id="font-size-display" class="text-xs font-bold text-[#cf2a2a]">24px</span>
+            <button id="btn-font-plus" class="w-6 h-6 rounded-full bg-[#fce8e8] text-[#cf2a2a] flex items-center justify-center font-bold hover:bg-red-200 transition-colors">
+              <i class="fas fa-plus text-[10px]"></i>
+            </button>
+            <input type="hidden" id="gift-font-size" value="24" />
+          </div>
+
+          <div>
+            <textarea 
+              id="gift-content" 
+              rows="6"
+              placeholder="Escreva aqui..." 
+              class="w-full bg-white border border-[#fca5a5] text-slate-600 rounded-lg p-3 outline-none focus:ring-2 focus:ring-red-200 text-sm resize-none"
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-3 mt-2">
+          <button 
+            id="btn-generate-gift" 
+            class="w-full bg-[#94a3b8] text-white font-bold py-3 rounded-lg shadow-sm flex items-center justify-center gap-2 hover:bg-slate-500 transition-colors"
+          >
+            <i class="fas fa-image"></i> Gerar Imagem
+          </button>
+          
+          <a href="/index.html" class="w-full bg-white text-[#cf2a2a] font-bold py-3 rounded-lg border border-[#cf2a2a] shadow-sm flex items-center justify-center gap-2 hover:bg-red-50 transition-colors">
+            <i class="fas fa-arrow-left"></i> Voltar
+          </a>
+        </div>
+      </div> <div id="gift-preview-section" class="w-full max-w-2xl mt-6 bg-white rounded-2xl shadow-xl p-6 border border-[#fca5a5] hidden">
+        <h3 class="text-[#cf2a2a] font-bold text-lg mb-4 text-center uppercase tracking-wide">Visualização do Cartaz</h3>
+        <div class="bg-slate-50 p-2 rounded-xl flex justify-center mb-6 border border-slate-200">
+          <img id="gift-preview-image" alt="Preview Cartaz" class="max-w-full h-auto shadow-sm rounded-lg" />
+        </div>
+        <div class="flex flex-col sm:flex-row gap-4">
+          <button id="btn-share-gift" class="flex-1 bg-[#25d366] text-white font-bold py-3 rounded-xl shadow-sm flex items-center justify-center gap-2 hover:bg-green-600 transition-colors">
+            <i class="fab fa-whatsapp text-xl"></i> Compartilhar
+          </button>
+          <button id="btn-download-gift" class="flex-1 bg-blue-600 text-white font-bold py-3 rounded-xl shadow-sm flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors">
+            <i class="fas fa-download text-xl"></i> Baixar
+          </button>
+        </div>
+      </div> </div>
+
+    <script type="module" src="/gifts.ts"></script>
+  </body>
+</html>

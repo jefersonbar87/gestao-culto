@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-BR" translate="no">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Configurações - ICM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <style>
+      body { 
+        font-family: 'Inter', sans-serif; 
+        background-color: #fff5f5; 
+        color: #1e293b; 
+      }
+    </style>
+  </head>
+  <body>
+    <div class="min-h-screen bg-[#fff5f5] p-6 pb-20">
+      <header class="flex items-center gap-4 mb-8">
+        <a href="/index.html" class="text-[#8f1919] p-2 bg-white rounded-full shadow-sm flex items-center justify-center w-10 h-10">
+          <i class="fas fa-arrow-left"></i>
+        </a>
+        <h1 class="text-2xl font-bold text-[#8f1919]">Configurações</h1>
+      </header>
+
+      <div class="max-w-md mx-auto space-y-8">
+        <!-- Logo Section -->
+        <section class="bg-white p-6 rounded-3xl shadow-sm border border-red-50">
+          <h2 class="font-bold text-[#8f1919] mb-4 flex items-center gap-2">
+            <i class="fas fa-image"></i> Logo da Tela Inicial
+          </h2>
+          <div class="flex flex-col items-center gap-4">
+            <img id="logo-preview" src="" alt="Preview" class="h-20 object-contain bg-slate-50 p-2 rounded-xl" />
+            <button 
+              id="btn-upload-logo"
+              class="text-sm bg-red-50 text-red-600 font-bold py-2 px-4 rounded-lg border border-red-100"
+            >
+              Trocar Logo
+            </button>
+            <input type="file" id="input-logo" class="hidden" accept="image/*" />
+          </div>
+        </section>
+
+        <!-- Hymn Header Section -->
+        <section class="bg-white p-6 rounded-3xl shadow-sm border border-red-50">
+          <h2 class="font-bold text-[#8f1919] mb-4 flex items-center gap-2">
+            <i class="fas fa-heading"></i> Cabeçalho do Cartaz
+          </h2>
+          <div class="space-y-4">
+            <div class="flex gap-2">
+              <button 
+                id="btn-header-text"
+                class="flex-1 py-2 rounded-lg font-bold text-xs"
+              >
+                Texto
+              </button>
+              <button 
+                id="btn-header-image"
+                class="flex-1 py-2 rounded-lg font-bold text-xs"
+              >
+                Imagem
+              </button>
+            </div>
+
+            <div id="container-header-text">
+              <input 
+                type="text" 
+                id="input-header-text"
+                class="w-full border border-red-100 rounded-lg p-3 text-sm focus:ring-2 focus:ring-red-200 outline-none uppercase"
+                placeholder="Ex: IGREJA CRISTÃ MARANATA"
+              />
+            </div>
+
+            <div id="container-header-image" class="hidden flex flex-col items-center gap-3">
+              <img id="header-image-preview" src="" class="h-12 border rounded p-1 hidden" />
+              <button 
+                id="btn-upload-header"
+                class="text-xs bg-red-50 text-red-600 font-bold py-2 px-4 rounded-lg"
+              >
+                Carregar Imagem de Cabeçalho
+              </button>
+              <input type="file" id="input-header" class="hidden" accept="image/*" />
+            </div>
+          </div>
+        </section>
+
+        <!-- Icons Section -->
+        <section class="bg-white p-6 rounded-3xl shadow-sm border border-red-50">
+          <h2 class="font-bold text-[#8f1919] mb-4 flex items-center gap-2">
+            <i class="fas fa-icons"></i> Ícones do Menu
+          </h2>
+          <p class="text-[10px] text-gray-400 mb-4 uppercase font-bold">Use classes do FontAwesome (Ex: fa-music)</p>
+          <div class="space-y-4">
+            <!-- Icon 1: Louvores -->
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center text-[#8f1919]">
+                <i id="icon-preview-hymns" class="fas fa-list-ul"></i>
+              </div>
+              <div class="flex-1">
+                <label class="text-[10px] font-bold text-red-300 uppercase block ml-1">Louvores</label>
+                <input 
+                  type="text" 
+                  id="input-icon-hymns" 
+                  class="w-full border-b border-red-50 p-1 text-sm outline-none focus:border-red-300"
+                />
+              </div>
+            </div>
+
+            <!-- Icon 2: Dons -->
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center text-[#8f1919]">
+                <i id="icon-preview-gifts" class="fas fa-id-card"></i>
+              </div>
+              <div class="flex-1">
+                <label class="text-[10px] font-bold text-red-300 uppercase block ml-1">Dons</label>
+                <input 
+                  type="text" 
+                  id="input-icon-gifts" 
+                  class="w-full border-b border-red-50 p-1 text-sm outline-none focus:border-red-300"
+                />
+              </div>
+            </div>
+
+            <!-- Icon 3: Outros -->
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center text-[#8f1919]">
+                <i id="icon-preview-other" class="fas fa-th-large"></i>
+              </div>
+              <div class="flex-1">
+                <label class="text-[10px] font-bold text-red-300 uppercase block ml-1">Outros</label>
+                <input 
+                  type="text" 
+                  id="input-icon-other" 
+                  class="w-full border-b border-red-50 p-1 text-sm outline-none focus:border-red-300"
+                />
+              </div>
+            </div>
+
+            <!-- Icon 4: Suporte -->
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center text-[#8f1919]">
+                <i id="icon-preview-support" class="fas fa-question-circle"></i>
+              </div>
+              <div class="flex-1">
+                <label class="text-[10px] font-bold text-red-300 uppercase block ml-1">Suporte</label>
+                <input 
+                  type="text" 
+                  id="input-icon-support" 
+                  class="w-full border-b border-red-50 p-1 text-sm outline-none focus:border-red-300"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <button 
+          id="btn-reset-settings"
+          class="w-full text-xs text-red-300 font-bold uppercase tracking-widest pt-4 block text-center hover:text-red-500"
+        >
+          Resetar Configurações
+        </button>
+      </div>
+    </div>
+
+    <script type="module" src="/settings.ts"></script>
+  </body>
+</html>

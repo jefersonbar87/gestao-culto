@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR" translate="no">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dados do Culto - ICM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <style>
+      body { 
+        font-family: 'Inter', sans-serif; 
+        background-color: #fce7f3; /* Fundo rosado da imagem */
+        color: #1e293b; 
+      }
+      /* Ocultar setas padrão de input number */
+      input[type=number]::-webkit-inner-spin-button, 
+      input[type=number]::-webkit-outer-spin-button { 
+        -webkit-appearance: none; 
+        margin: 0; 
+      }
+    </style>
+  </head>
+  <body class="min-h-screen flex flex-col items-center py-8 px-4">
+    
+    <h1 class="text-3xl font-black text-[#8f1919] mb-6">Dados do Culto</h1>
+
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl p-6 md:p-8 space-y-8 border-t-4 border-[#8f1919]">
+      
+      <!-- DATA DO CULTO -->
+      <div class="flex flex-col items-center text-center">
+        <h2 class="font-bold text-[#8f1919] text-lg mb-2">Data do Culto</h2>
+        <label class="text-xs font-bold text-[#8f1919] mb-1">Selecione a Data</label>
+        <input type="date" id="input-date" class="w-64 border border-[#8f1919] text-[#8f1919] font-bold rounded-lg p-2 text-center outline-none focus:ring-2 focus:ring-red-200" />
+        <div id="date-display" class="mt-2 text-xs font-bold text-[#8f1919] bg-red-50 py-1 px-4 rounded-md">
+          Hoje: 
+        </div>
+      </div>
+
+      <!-- GRUPO DE ASSISTÊNCIA -->
+      <div class="text-center">
+        <h2 class="font-bold text-[#8f1919] text-lg mb-2">Grupo de Assistência Responsável</h2>
+        <input type="text" id="input-group" placeholder="DIGITE O GRUPO DE ASSISTÊNCIA" class="w-full border border-[#8f1919] text-[#8f1919] placeholder-red-300 font-bold rounded-lg p-3 text-center outline-none focus:ring-2 focus:ring-red-200 uppercase text-sm" />
+      </div>
+
+      <!-- TIPO DE CULTO -->
+      <div class="text-center">
+        <h2 class="font-bold text-[#8f1919] text-lg mb-2">Tipo de Culto</h2>
+        <div class="flex gap-4">
+          <button id="btn-type-ebd" class="flex-1 border border-[#8f1919] text-[#8f1919] font-bold rounded-lg py-3 hover:bg-red-50 transition-colors uppercase">EBD</button>
+          <button id="btn-type-night" class="flex-1 border border-[#8f1919] text-[#8f1919] font-bold rounded-lg py-3 hover:bg-red-50 transition-colors uppercase">CULTO À NOITE</button>
+        </div>
+      </div>
+
+      <!-- RESPONSÁVEIS -->
+      <div class="text-center">
+        <h2 class="font-bold text-[#8f1919] text-lg mb-4">Responsáveis</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+          <div>
+            <label class="text-[11px] font-bold text-[#8f1919] block mb-1">Responsável pelo Portão</label>
+            <input type="text" id="resp-portao" class="w-full border border-[#8f1919] text-slate-700 font-bold rounded-lg p-2 outline-none uppercase text-sm" />
+          </div>
+          <div>
+            <label class="text-[11px] font-bold text-[#8f1919] block mb-1">Responsável pelo Louvor</label>
+            <input type="text" id="resp-louvor" class="w-full border border-[#8f1919] text-slate-700 font-bold rounded-lg p-2 outline-none uppercase text-sm" />
+          </div>
+          <div>
+            <label class="text-[11px] font-bold text-[#8f1919] block mb-1">Responsável pela Palavra</label>
+            <input type="text" id="resp-palavra" class="w-full border border-[#8f1919] text-slate-700 font-bold rounded-lg p-2 outline-none uppercase text-sm" />
+          </div>
+          <div>
+            <label class="text-[11px] font-bold text-[#8f1919] block mb-1">Texto Lido</label>
+            <input type="text" id="resp-texto" class="w-full border border-[#8f1919] text-slate-700 font-bold rounded-lg p-2 outline-none uppercase text-sm" />
+          </div>
+        </div>
+      </div>
+
+      <!-- PARTICIPANTES -->
+      <div class="text-center">
+        <h2 class="font-bold text-[#8f1919] text-lg mb-4">Participantes do Culto</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <!-- Card Adultos Membros -->
+          <div class="border rounded-xl p-3 flex flex-col items-center justify-between shadow-sm border-blue-200">
+            <span class="text-[10px] font-extrabold text-blue-700 uppercase mb-2 text-center h-8 flex items-center">Adultos<br>Membros</span>
+            <div class="flex items-center gap-2">
+              <button class="w-6 h-6 rounded-full bg-blue-50 text-blue-500 font-bold flex items-center justify-center btn-minus" data-target="adults-members"><i class="fas fa-minus text-xs"></i></button>
+              <input type="number" id="adults-members" value="0" class="w-12 text-center font-black text-blue-800 text-lg outline-none border border-blue-200 rounded-lg p-1" />
+              <button class="w-6 h-6 rounded-full bg-blue-50 text-blue-500 font-bold flex items-center justify-center btn-plus" data-target="adults-members"><i class="fas fa-plus text-xs"></i></button>
+            </div>
+          </div>
+          <!-- Card Adultos Visitantes -->
+          <div class="border rounded-xl p-3 flex flex-col items-center justify-between shadow-sm border-blue-200">
+            <span class="text-[10px] font-extrabold text-blue-700 uppercase mb-2 text-center h-8 flex items-center">Adultos<br>(Visitantes)</span>
+            <div class="flex items-center gap-2">
+              <button class="w-6 h-6 rounded-full bg-blue-50 text-blue-500 font-bold flex items-center justify-center btn-minus" data-target="adults-visitors"><i class="fas fa-minus text-xs"></i></button>
+              <input type="number" id="adults-visitors" value="0" class="w-12 text-center font-black text-blue-800 text-lg outline-none border border-blue-200 rounded-lg p-1" />
+              <button class="w-6 h-6 rounded-full bg-blue-50 text-blue-500 font-bold flex items-center justify-center btn-plus" data-target="adults-visitors"><i class="fas fa-plus text-xs"></i></button>
+            </div>
+          </div>
+          <!-- Card Crianças -->
+          <div class="border rounded-xl p-3 flex flex-col items-center justify-between shadow-sm border-green-300">
+            <span class="text-[10px] font-extrabold text-green-700 uppercase mb-2 text-center h-8 flex items-center">Crianças</span>
+            <div class="flex items-center gap-2">
+              <button class="w-6 h-6 rounded-full bg-green-50 text-green-600 font-bold flex items-center justify-center btn-minus" data-target="kids-members"><i class="fas fa-minus text-xs"></i></button>
+              <input type="number" id="kids-members" value="0" class="w-12 text-center font-black text-green-700 text-lg outline-none border border-green-300 rounded-lg p-1" />
+              <button class="w-6 h-6 rounded-full bg-green-50 text-green-600 font-bold flex items-center justify-center btn-plus" data-target="kids-members"><i class="fas fa-plus text-xs"></i></button>
+            </div>
+          </div>
+          <!-- Card Crianças Visitantes -->
+          <div class="border rounded-xl p-3 flex flex-col items-center justify-between shadow-sm border-green-300">
+            <span class="text-[10px] font-extrabold text-green-700 uppercase mb-2 text-center h-8 flex items-center">Crianças<br>(Visitantes)</span>
+            <div class="flex items-center gap-2">
+              <button class="w-6 h-6 rounded-full bg-green-50 text-green-600 font-bold flex items-center justify-center btn-minus" data-target="kids-visitors"><i class="fas fa-minus text-xs"></i></button>
+              <input type="number" id="kids-visitors" value="0" class="w-12 text-center font-black text-green-700 text-lg outline-none border border-green-300 rounded-lg p-1" />
+              <button class="w-6 h-6 rounded-full bg-green-50 text-green-600 font-bold flex items-center justify-center btn-plus" data-target="kids-visitors"><i class="fas fa-plus text-xs"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- OBREIROS E OFICIAIS -->
+      <div class="text-center">
+        <h2 class="font-bold text-[#8f1919] text-lg mb-2">Grupo de Obreiros, Diáconos, Ungidos e Pastores presentes</h2>
+        <div class="bg-yellow-50 border border-yellow-300 text-yellow-700 text-xs font-bold p-2 rounded-lg mb-4">
+          ⚠️ ATENÇÃO: Estes campos não serão computados no total geral, apenas para informação de presença.
+        </div>
+        <div class="grid grid-cols-3 gap-3">
+          <div class="border border-purple-200 rounded-xl p-3 flex flex-col items-center shadow-sm">
+            <span class="text-[9px] font-black text-purple-700 uppercase mb-2">Pastor/Ungidos</span>
+            <div class="flex items-center gap-1 sm:gap-2">
+              <button class="w-5 h-5 rounded-full bg-purple-50 text-purple-500 font-bold flex items-center justify-center btn-minus" data-target="officers-pastor"><i class="fas fa-minus text-[10px]"></i></button>
+              <input type="number" id="officers-pastor" value="0" class="w-10 text-center font-black text-purple-800 text-base outline-none border border-purple-200 rounded-lg p-1" />
+              <button class="w-5 h-5 rounded-full bg-purple-50 text-purple-500 font-bold flex items-center justify-center btn-plus" data-target="officers-pastor"><i class="fas fa-plus text-[10px]"></i></button>
+            </div>
+          </div>
+          <div class="border border-orange-200 rounded-xl p-3 flex flex-col items-center shadow-sm">
+            <span class="text-[10px] font-black text-orange-600 uppercase mb-2">Diáconos</span>
+            <div class="flex items-center gap-1 sm:gap-2">
+              <button class="w-5 h-5 rounded-full bg-orange-50 text-orange-500 font-bold flex items-center justify-center btn-minus" data-target="officers-deacon"><i class="fas fa-minus text-[10px]"></i></button>
+              <input type="number" id="officers-deacon" value="0" class="w-10 text-center font-black text-orange-700 text-base outline-none border border-orange-200 rounded-lg p-1" />
+              <button class="w-5 h-5 rounded-full bg-orange-50 text-orange-500 font-bold flex items-center justify-center btn-plus" data-target="officers-deacon"><i class="fas fa-plus text-[10px]"></i></button>
+            </div>
+          </div>
+          <div class="border border-blue-200 rounded-xl p-3 flex flex-col items-center shadow-sm">
+            <span class="text-[10px] font-black text-blue-600 uppercase mb-2">Obreiros</span>
+            <div class="flex items-center gap-1 sm:gap-2">
+              <button class="w-5 h-5 rounded-full bg-blue-50 text-blue-500 font-bold flex items-center justify-center btn-minus" data-target="officers-workers"><i class="fas fa-minus text-[10px]"></i></button>
+              <input type="number" id="officers-workers" value="0" class="w-10 text-center font-black text-blue-700 text-base outline-none border border-blue-200 rounded-lg p-1" />
+              <button class="w-5 h-5 rounded-full bg-blue-50 text-blue-500 font-bold flex items-center justify-center btn-plus" data-target="officers-workers"><i class="fas fa-plus text-[10px]"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TOTAIS -->
+      <div class="text-center">
+        <h2 class="font-bold text-[#8f1919] text-lg mb-4">Totais</h2>
+        <div class="grid grid-cols-3 gap-3">
+          <div class="bg-[#eff6ff] border border-blue-200 rounded-xl p-3 flex flex-col items-center">
+            <span class="text-[10px] font-black text-blue-700 uppercase mb-1">Total de Adultos</span>
+            <span id="total-adults" class="font-black text-xl text-blue-900">0</span>
+          </div>
+          <div class="bg-[#f0fdf4] border border-green-200 rounded-xl p-3 flex flex-col items-center">
+            <span class="text-[10px] font-black text-green-700 uppercase mb-1">Total de Crianças</span>
+            <span id="total-kids" class="font-black text-xl text-green-900">0</span>
+          </div>
+          <div class="bg-[#fef2f2] border border-red-200 rounded-xl p-3 flex flex-col items-center">
+            <span class="text-[10px] font-black text-red-700 uppercase mb-1">Total Geral</span>
+            <span id="total-general" class="font-black text-xl text-red-900">0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOTÕES DE AÇÃO -->
+      <div class="flex flex-col gap-3 pt-4">
+        <button id="btn-clear-service" class="w-full bg-[#d97706] text-white font-bold py-3 rounded-lg shadow-md flex items-center justify-center gap-2 hover:bg-[#b45309] transition-colors">
+          <i class="fas fa-trash-alt"></i> Limpar Formulário
+        </button>
+        <button id="btn-generate-report" class="w-full bg-[#94a3b8] text-white font-bold py-3 rounded-lg shadow-md flex items-center justify-center gap-2 hover:bg-[#64748b] transition-colors">
+          <i class="fas fa-image"></i> Gerar Imagem
+        </button>
+        <a href="/other-apps.html" class="w-full bg-white text-[#8f1919] font-bold py-3 rounded-lg border border-[#8f1919] flex items-center justify-center gap-2 hover:bg-red-50 transition-colors">
+          <i class="fas fa-arrow-left"></i> Voltar
+        </a>
+      </div>
+
+      <!-- Preview Section (Mantida igual, aparece após gerar) -->
+      <div id="service-preview-section" class="w-full mt-6 bg-white rounded-2xl shadow-xl p-6 border-2 border-red-50 hidden">
+        <h3 class="text-[#8f1919] font-bold text-xl mb-4 text-center">Visualização</h3>
+        <div class="bg-slate-100 p-4 rounded-xl flex justify-center mb-6">
+          <img id="service-preview-image" alt="Preview Relatório" class="max-w-full h-auto shadow-md rounded" />
+        </div>
+        <div class="flex flex-col sm:flex-row gap-4">
+          <button id="btn-share-service" class="flex-1 bg-[#25d366] text-white font-black py-4 rounded-xl shadow-lg flex items-center justify-center gap-3">
+            <i class="fab fa-whatsapp text-2xl"></i> COMPARTILHAR
+          </button>
+          <button id="btn-download-service" class="flex-1 bg-blue-600 text-white font-black py-4 rounded-xl shadow-lg flex items-center justify-center gap-3">
+            <i class="fas fa-download"></i> BAIXAR
+          </button>
+        </div>
+      </div>
+
+    </div>
+    <script type="module" src="/service-data.ts"></script>
+  </body>
+</html>

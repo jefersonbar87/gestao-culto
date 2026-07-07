@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR" translate="no">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Oração Ininterrupta - ICM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <style>
+      body { 
+        font-family: 'Inter', sans-serif; 
+        background-color: #f8fafc; 
+        color: #1e293b; 
+      }
+    </style>
+  </head>
+  <body>
+    <div class="min-h-screen bg-slate-50 flex flex-col items-center pt-8 pb-12 px-4">
+      <header class="w-full max-w-2xl flex items-center gap-4 mb-8">
+        <a href="/other-apps.html" class="text-[#8f1919] p-2 bg-white rounded-full shadow-sm flex items-center justify-center w-10 h-10">
+          <i class="fas fa-arrow-left"></i>
+        </a>
+        <h1 class="text-2xl font-bold text-[#8f1919] uppercase">Oração Ininterrupta</h1>
+      </header>
+
+      <div class="bg-white rounded-3xl shadow-xl w-full max-w-2xl p-6 md:p-8 space-y-6">
+        <div class="border border-red-100 rounded-2xl p-4 bg-red-50/20 flex flex-col sm:flex-row gap-4 items-center justify-between">
+          <div class="flex-1 w-full relative">
+            <input 
+              type="text" 
+              id="search-slots" 
+              placeholder="Buscar por irmão/família..." 
+              class="w-full bg-white border border-slate-200 rounded-xl pl-4 pr-10 py-2.5 outline-none text-sm uppercase" 
+            />
+            <i class="fas fa-search absolute right-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+          </div>
+          <div class="flex items-center gap-4 text-xs shrink-0">
+            <button id="btn-export-schedule" class="text-blue-600 font-bold uppercase hover:underline">
+              <i class="fas fa-file-export mr-1"></i> Exportar Escala
+            </button>
+            <button id="btn-clear-schedule" class="text-red-600 font-bold uppercase hover:underline">
+              <i class="fas fa-trash-alt mr-1"></i> Limpar Tabela
+            </button>
+          </div>
+        </div>
+
+        <!-- 24 Hours slots table wrapper -->
+        <div class="border rounded-2xl overflow-hidden max-h-[32rem] overflow-y-auto">
+          <table class="w-full border-collapse text-left text-sm bg-white">
+            <thead class="bg-slate-50 border-b sticky top-0 z-10">
+              <tr>
+                <th class="p-3.5 font-bold text-slate-500 text-xs uppercase w-28">Horário</th>
+                <th class="p-3.5 font-bold text-slate-500 text-xs uppercase">Irmão / Família Responsável</th>
+              </tr>
+            </thead>
+            <tbody id="slots-tbody" class="divide-y">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="w-full max-w-2xl mt-6">
+        <a href="/other-apps.html" class="w-full bg-white text-[#8f1919] font-bold py-3 rounded-xl border border-red-200 block text-center shadow-sm">Voltar</a>
+      </div>
+    </div>
+
+    <script type="module" src="/prayer.ts"></script>
+  </body>
+</html>
