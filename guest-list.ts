@@ -1,254 +1,339 @@
+interface EventInfo {
+  date: string;
+  time: string;
+  inviter: string;
+}
+
 interface Guest {
   id: string;
   name: string;
-  type: 'Adulto' | 'Criança';
-  invitedBy: string;
-  confirmed: boolean;
+  phone: string;
 }
 
 let guests: Guest[] = [];
-let currentFilter: 'all' | 'adult' | 'child' | 'confirmed' | 'pending' = 'all';
+let eventInfo: EventInfo = { date: '', time: '', inviter: '' };
 
-// DOM elements
+// DOM elements - Formulário do Evento
+const inputDate = document.getElementById('event-date') as HTMLInputElement;
+const inputTime = document.getElementById('event-time') as HTMLInputElement;
+const inputInviter = document.getElementById('event-inviter') as HTMLInputElement;
+
+// DOM elements - Formulário do Convidado
 const form = document.getElementById('form-guest') as HTMLFormElement;
 const inputName = document.getElementById('guest-name') as HTMLInputElement;
-const inputInvitedBy = document.getElementById('guest-invited-by') as HTMLInputElement;
-const radioAdult = document.getElementById('type-adult') as HTMLInputElement;
-const radioChild = document.getElementById('type-child') as HTMLInputElement;
+const inputPhone = document.getElementById('guest-phone') as HTMLInputElement;
 
-const statTotal = document.getElementById('stat-total') as HTMLSpanElement;
-const statAdults = document.getElementById('stat-adults') as HTMLSpanElement;
-const statKids = document.getElementById('stat-kids') as HTMLSpanElement;
-const statConfirmed = document.getElementById('stat-confirmed') as HTMLSpanElement;
-
-const filterAll = document.getElementById('filter-all') as HTMLButtonElement;
-const filterAdult = document.getElementById('filter-adult') as HTMLButtonElement;
-const filterChild = document.getElementById('filter-child') as HTMLButtonElement;
-const filterConfirmed = document.getElementById('filter-confirmed') as HTMLButtonElement;
-const filterPending = document.getElementById('filter-pending') as HTMLButtonElement;
-
-const btnExportTxt = document.getElementById('btn-export-txt') as HTMLButtonElement;
+// DOM elements - Lista e Ações
+const guestsListTbody = document.getElementById('guests-list') as HTMLTableSectionElement;
+const guestCount = document.getElementById('guest-count') as HTMLSpanElement;
 const btnClearGuests = document.getElementById('btn-clear-guests') as HTMLButtonElement;
-const tbody = document.getElementById('guests-tbody') as HTMLTableSectionElement;
 
-const filterButtons = [
-  { btn: filterAll, val: 'all' as const },
-  { btn: filterAdult, val: 'adult' as const },
-  { btn: filterChild, val: 'child' as const },
-  { btn: filterConfirmed, val: 'confirmed' as const },
-  { btn: filterPending, val: 'pending' as const }
-];
+// DOM elements - Geração de Imagem
+const btnGenerateImage = document.getElementById('btn-generate-image') as HTMLButtonElement;
+const previewSection = document.getElementById('image-preview-section') as HTMLDivElement;
+const generatedImage = document.getElementById('generated-image') as HTMLImageElement;
+const btnDownload = document.getElementById('btn-download') as HTMLButtonElement;
+const btnWhatsapp = document.getElementById('btn-whatsapp') as HTMLButtonElement;
+const btnClosePreview = document.getElementById('btn-close-preview') as HTMLButtonElement;
 
-// Load and Save helpers
-function loadGuests() {
-  const saved = localStorage.getItem('GUEST_LIST');
-  if (saved) {
-    try {
-      guests = JSON.parse(saved);
-    } catch (e) {
-      console.error(e);
-    }
-  }
-  updateUI();
-}
+let currentImageUrl: string | null = null;
 
-function saveGuests() {
-  localStorage.setItem('GUEST_LIST', JSON.stringify(guests));
-  updateUI();
-}
+// Máscara de telefone segura para o TypeScript
+inputPhone?.addEventListener('input', function (e: Event) {
+  const target = e.target as HTMLInputElement;
+  if (!target) return;
 
-function updateUI() {
-  updateStats();
-  renderTable();
-}
-
-function updateStats() {
-  const total = guests.length;
-  const adults = guests.filter(g => g.type === 'Adulto').length;
-  const kids = guests.filter(g => g.type === 'Criança').length;
-  const confirmed = guests.filter(g => g.confirmed).length;
-
-  if (statTotal) statTotal.innerText = total.toString();
-  if (statAdults) statAdults.innerText = adults.toString();
-  if (statKids) statKids.innerText = kids.toString();
-  if (statConfirmed) statConfirmed.innerText = confirmed.toString();
-}
-
-function renderTable() {
-  if (!tbody) return;
-  tbody.innerHTML = '';
-
-  let filtered = guests;
-  if (currentFilter === 'adult') {
-    filtered = guests.filter(g => g.type === 'Adulto');
-  } else if (currentFilter === 'child') {
-    filtered = guests.filter(g => g.type === 'Criança');
-  } else if (currentFilter === 'confirmed') {
-    filtered = guests.filter(g => g.confirmed);
-  } else if (currentFilter === 'pending') {
-    filtered = guests.filter(g => !g.confirmed);
-  }
-
-  if (filtered.length === 0) {
-    const row = document.createElement('tr');
-    row.innerHTML = `<td colspan="4" class="p-8 text-center text-slate-400 italic font-medium">Nenhum convidado nesta categoria.</td>`;
-    tbody.appendChild(row);
-    return;
-  }
-
-  filtered.forEach(g => {
-    const row = document.createElement('tr');
-    row.className = g.confirmed ? 'bg-red-50/20' : 'hover:bg-slate-50';
-
-    row.innerHTML = `
-      <td class="p-3 font-bold text-slate-700 uppercase">${g.name}</td>
-      <td class="p-3 text-slate-500 text-xs">
-        <span class="px-2 py-0.5 rounded-full font-bold ${g.type === 'Adulto' ? 'bg-blue-50 text-blue-700' : 'bg-pink-50 text-pink-700'}">${g.type}</span>
-      </td>
-      <td class="p-3 text-slate-500 uppercase text-xs">${g.invitedBy}</td>
-      <td class="p-3 text-center flex items-center justify-center gap-3">
-        <button class="btn-toggle-presence w-8 h-8 rounded-full flex items-center justify-center border transition-all ${g.confirmed ? 'bg-green-100 text-green-700 border-green-200' : 'bg-slate-100 text-slate-400 border-slate-200 hover:border-slate-300'}" data-id="${g.id}">
-          <i class="fas fa-check"></i>
-        </button>
-        <button class="btn-delete-guest w-8 h-8 rounded-full flex items-center justify-center text-red-500 hover:bg-red-50" data-id="${g.id}">
-          <i class="far fa-trash-alt"></i>
-        </button>
-      </td>
-    `;
-
-    tbody.appendChild(row);
-  });
-
-  // Attach action event listeners
-  const btnToggles = tbody.querySelectorAll('.btn-toggle-presence');
-  btnToggles.forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const id = (e.currentTarget as HTMLButtonElement).getAttribute('data-id');
-      if (id) toggleGuestPresence(id);
-    });
-  });
-
-  const btnDeletes = tbody.querySelectorAll('.btn-delete-guest');
-  btnDeletes.forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const id = (e.currentTarget as HTMLButtonElement).getAttribute('data-id');
-      if (id) deleteGuest(id);
-    });
-  });
-}
-
-function toggleGuestPresence(id: string) {
-  guests = guests.map(g => g.id === id ? { ...g, confirmed: !g.confirmed } : g);
-  saveGuests();
-}
-
-function deleteGuest(id: string) {
-  if (confirm("Excluir convidado?")) {
-    guests = guests.filter(g => g.id !== id);
-    saveGuests();
-  }
-}
-
-// Add guest submit
-if (form) {
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const name = inputName.value.trim().toUpperCase();
-    const invitedBy = inputInvitedBy.value.trim().toUpperCase();
-    const type = radioChild.checked ? 'Criança' : 'Adulto';
-
-    if (!name || !invitedBy) return;
-
-    const newGuest: Guest = {
-      id: Math.random().toString(36).substr(2, 9),
-      name,
-      invitedBy,
-      type,
-      confirmed: false
-    };
-
-    guests.push(newGuest);
-    saveGuests();
-
-    inputName.value = '';
-    inputInvitedBy.value = '';
-    radioAdult.checked = true;
-  });
-}
-
-// Set active filter button styling
-function applyFilter(filter: typeof currentFilter) {
-  currentFilter = filter;
-  filterButtons.forEach(({ btn, val }) => {
-    if (!btn) return;
-    if (val === filter) {
-      btn.className = "px-3 py-1.5 rounded-lg text-xs font-bold uppercase bg-red-50 text-red-700 border border-red-100";
-    } else {
-      btn.className = "px-3 py-1.5 rounded-lg text-xs font-bold uppercase bg-slate-50 text-slate-500 hover:bg-slate-100";
-    }
-  });
-  renderTable();
-}
-
-filterButtons.forEach(({ btn, val }) => {
-  if (btn) {
-    btn.addEventListener('click', () => applyFilter(val));
+  let x = target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
+  if (x) {
+    target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
   }
 });
 
-// Clear list
+// Load and Save helpers
+function loadData() {
+  const savedGuests = localStorage.getItem('TROMBETAS_GUESTS');
+  const savedEvent = localStorage.getItem('TROMBETAS_EVENT');
+
+  if (savedGuests) {
+    try { guests = JSON.parse(savedGuests); } catch (e) { console.error(e); }
+  }
+  if (savedEvent) {
+    try {
+      eventInfo = JSON.parse(savedEvent);
+      if (inputDate) inputDate.value = eventInfo.date || '';
+      if (inputTime) inputTime.value = eventInfo.time || '';
+      if (inputInviter) inputInviter.value = eventInfo.inviter || '';
+    } catch (e) { console.error(e); }
+  }
+
+  updateUI();
+}
+
+function saveData() {
+  eventInfo = {
+    date: inputDate ? inputDate.value : '',
+    time: inputTime ? inputTime.value : '',
+    inviter: inputInviter ? inputInviter.value.toUpperCase() : ''
+  };
+  localStorage.setItem('TROMBETAS_GUESTS', JSON.stringify(guests));
+  localStorage.setItem('TROMBETAS_EVENT', JSON.stringify(eventInfo));
+  updateUI();
+}
+
+[inputDate, inputTime, inputInviter].forEach(input => {
+  input?.addEventListener('change', saveData);
+  input?.addEventListener('input', saveData);
+});
+
+function updateUI() {
+  if (guestCount) guestCount.innerText = guests.length.toString();
+  renderTable();
+}
+
+function renderTable() {
+  if (!guestsListTbody) return;
+  guestsListTbody.innerHTML = '';
+
+  if (guests.length === 0) {
+    guestsListTbody.innerHTML = `
+      <tr>
+        <td colspan="4" class="text-center text-slate-400 italic text-sm py-6 border border-slate-300">
+          Nenhum convidado adicionado ainda.
+        </td>
+      </tr>`;
+    return;
+  }
+
+  guests.forEach((g, index) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="border border-slate-300 p-2.5 font-bold text-[#0d2f40]">${index + 1}</td>
+      <td class="border border-slate-300 p-2.5 text-left font-bold text-[#0d2f40] uppercase">${g.name}</td>
+      <td class="border border-slate-300 p-2.5 font-bold text-[#c2410c]">${g.phone || ''}</td>
+      <td class="border border-slate-300 p-2.5">
+        <button class="btn-delete w-6 h-6 bg-red-50 text-red-400 rounded-full inline-flex items-center justify-center hover:bg-red-100 hover:text-red-600 transition-colors" data-id="${g.id}">
+          <i class="fas fa-times text-[10px]"></i>
+        </button>
+      </td>
+    `;
+    guestsListTbody.appendChild(tr);
+  });
+
+  document.querySelectorAll('.btn-delete').forEach(btn => {
+    btn.addEventListener('click', (e: Event) => {
+      const currentTarget = e.currentTarget as HTMLButtonElement;
+      const id = currentTarget.getAttribute('data-id');
+      if (id) {
+        guests = guests.filter(g => g.id !== id);
+        saveData();
+      }
+    });
+  });
+}
+
+if (form) {
+  form.addEventListener('submit', (e: Event) => {
+    e.preventDefault();
+    const name = inputName.value.trim().toUpperCase();
+    const phone = inputPhone.value.trim();
+
+    if (!name) return;
+
+    guests.push({
+      id: Date.now().toString(),
+      name,
+      phone
+    });
+
+    saveData();
+    inputName.value = '';
+    inputPhone.value = '';
+    inputName.focus();
+  });
+}
+
 if (btnClearGuests) {
   btnClearGuests.addEventListener('click', () => {
-    if (confirm("Limpar toda a lista de convidados?")) {
+    if (confirm("Tem certeza que deseja limpar toda a lista?")) {
       guests = [];
-      saveGuests();
+      saveData();
+      if (previewSection) previewSection.classList.add('hidden');
     }
   });
 }
 
-// Export TXT
-if (btnExportTxt) {
-  btnExportTxt.addEventListener('click', () => {
-    if (guests.length === 0) {
-      alert("A lista está vazia!");
-      return;
+// Ocultar preview
+if (btnClosePreview) {
+  btnClosePreview.addEventListener('click', () => {
+    if (previewSection) previewSection.classList.add('hidden');
+  });
+}
+
+// Lógica Visual do Canvas de Alta Fidelidade
+async function generateReportImage() {
+  if (guests.length === 0) {
+    alert("Adicione pelo menos um convidado para gerar a imagem.");
+    return;
+  }
+
+  btnGenerateImage.disabled = true;
+  btnGenerateImage.innerHTML = '<i class="fas fa-spinner fa-spin"></i> GERANDO...';
+
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
+  const width = 900;
+  const rowHeight = 45;
+  const minRows = 3;
+  const totalRows = Math.max(guests.length, minRows);
+  const height = 180 + ((totalRows + 1) * rowHeight) + 80;
+
+  canvas.width = width;
+  canvas.height = height;
+
+  // Fundo Branco
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillRect(0, 0, width, height);
+
+  const marginX = 50;
+  let currentY = 50;
+
+  // 1. Caixa do Título
+  ctx.strokeStyle = '#1e293b';
+  ctx.lineWidth = 3;
+  ctx.strokeRect(marginX, currentY, width - (marginX * 2), 50);
+
+  ctx.fillStyle = '#1e293b';
+  ctx.font = 'bold 22px Arial';
+  ctx.textAlign = 'left';
+  ctx.fillText('CONVIDADOS TROMBETAS E FESTAS 2026', marginX + 15, currentY + 33);
+
+  ctx.font = 'bold 14px Arial';
+  ctx.textAlign = 'right';
+  const dateStr = eventInfo.date ? new Date(eventInfo.date + 'T00:00:00').toLocaleDateString('pt-BR') : '--/--/----';
+  const timeStr = eventInfo.time ? eventInfo.time + 'h' : '--:--h';
+  ctx.fillText(`Data do evento: ${dateStr} - ${timeStr}`, width - marginX - 15, currentY + 30);
+
+  currentY += 65; // Espaço até a tabela
+
+  // 2. Cabeçalho da Tabela
+  ctx.fillStyle = '#2c3e50';
+  ctx.fillRect(marginX, currentY, width - (marginX * 2), rowHeight);
+  ctx.strokeRect(marginX, currentY, width - (marginX * 2), rowHeight);
+
+  // Colunas: Ajuste de Larguras
+  const col1W = 80; // Nº
+  const col3W = 220; // Telefone
+  const col2W = width - (marginX * 2) - col1W - col3W; // Nome
+
+  const col1X = marginX;
+  const col2X = marginX + col1W;
+  const col3X = marginX + col1W + col2W;
+
+  // Textos do Cabeçalho
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = 'bold 15px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText('Nº', col1X + (col1W / 2), currentY + 28);
+  ctx.fillText('NOME DO CONVIDADO', col2X + (col2W / 2), currentY + 28);
+  ctx.fillText('TELEFONE', col3X + (col3W / 2), currentY + 28);
+
+  // Linhas verticais do cabeçalho
+  ctx.beginPath();
+  ctx.moveTo(col2X, currentY);
+  ctx.lineTo(col2X, currentY + rowHeight);
+  ctx.moveTo(col3X, currentY);
+  ctx.lineTo(col3X, currentY + rowHeight);
+  ctx.stroke();
+
+  currentY += rowHeight;
+
+  // 3. Linhas da Tabela
+  ctx.fillStyle = '#1e293b';
+  for (let i = 0; i < totalRows; i++) {
+    const isGuest = i < guests.length;
+
+    // Borda da linha inteira
+    ctx.strokeRect(marginX, currentY, width - (marginX * 2), rowHeight);
+
+    // Linhas verticais separadoras
+    ctx.beginPath();
+    ctx.moveTo(col2X, currentY);
+    ctx.lineTo(col2X, currentY + rowHeight);
+    ctx.moveTo(col3X, currentY);
+    ctx.lineTo(col3X, currentY + rowHeight);
+    ctx.stroke();
+
+    if (isGuest) {
+      const g = guests[i];
+      ctx.font = 'bold 14px Arial';
+
+      // Nº
+      ctx.textAlign = 'center';
+      ctx.fillText((i + 1).toString(), col1X + (col1W / 2), currentY + 28);
+
+      // Nome
+      ctx.textAlign = 'left';
+      ctx.fillText(g.name, col2X + 20, currentY + 28);
+
+      // Telefone
+      ctx.textAlign = 'center';
+      ctx.fillText(g.phone || '', col3X + (col3W / 2), currentY + 28);
     }
+    currentY += rowHeight;
+  }
 
-    const today = new Date();
-    let text = `========================================\n`;
-    text += `LISTA DE CONVIDADOS - CULTO DE TROMBETAS\n`;
-    text += `DATA DE EMISSÃO: ${today.toLocaleDateString('pt-BR')}\n`;
-    text += `========================================\n\n`;
+  // 4. Rodapé Final
+  ctx.fillStyle = '#1e293b';
+  ctx.font = 'bold 10px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText('IGREJA CRISTÃ MARANATA - TROMBETAS E FESTAS 2026', width / 2, currentY + 30);
 
-    const total = guests.length;
-    const confirmed = guests.filter(g => g.confirmed).length;
-    const pending = total - confirmed;
+  // Finalizar Imagem
+  currentImageUrl = canvas.toDataURL('image/png');
+  generatedImage.src = currentImageUrl;
+  previewSection.classList.remove('hidden');
+  previewSection.scrollIntoView({ behavior: 'smooth' });
 
-    text += `RESUMO GERAL:\n`;
-    text += `- TOTAL DE CONVIDADOS: ${total}\n`;
-    text += `- CONFIRMADOS: ${confirmed}\n`;
-    text += `- PENDENTES: ${pending}\n\n`;
+  btnGenerateImage.disabled = false;
+  btnGenerateImage.innerHTML = '<i class="far fa-image"></i> Gerar Imagem';
+}
 
-    text += `----------------------------------------\n`;
-    text += `LISTAGEM GERAL DE CONVIDADOS:\n`;
-    text += `----------------------------------------\n`;
+if (btnGenerateImage) {
+  btnGenerateImage.addEventListener('click', generateReportImage);
+}
 
-    guests.forEach((g, i) => {
-      text += `${i + 1}. [${g.confirmed ? 'CONFIRMADO' : 'PENDENTE'}] ${g.name} (${g.type.toUpperCase()}) - CONVIDADO POR: ${g.invitedBy}\n`;
-    });
-
-    text += `\n========================================\n`;
-    text += `SISTEMA DE GESTÃO DO CULTO PROFÉTICO - ICM\n`;
-    text += `========================================\n`;
-
-    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+// Botões da Tela de Preview
+if (btnDownload) {
+  btnDownload.addEventListener('click', () => {
+    if (!currentImageUrl) return;
     const link = document.createElement('a');
-    link.download = `convidados-trombetas.txt`;
-    link.href = URL.createObjectURL(blob);
+    link.download = `lista-trombetas.png`;
+    link.href = currentImageUrl;
     link.click();
   });
 }
 
+if (btnWhatsapp) {
+  btnWhatsapp.addEventListener('click', async () => {
+    if (!currentImageUrl) return;
+    try {
+      const res = await fetch(currentImageUrl);
+      const blob = await res.blob();
+      const file = new File([blob], "lista-trombetas.png", { type: "image/png" });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], title: 'Lista Trombetas' });
+      } else {
+        alert("Baixe a imagem para compartilhar no seu dispositivo.");
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Erro ao compartilhar.");
+    }
+  });
+}
+
 // Boot
-loadGuests();
-export {};
+loadData();
+export { };
