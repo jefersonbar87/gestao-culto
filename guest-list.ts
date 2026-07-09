@@ -39,10 +39,10 @@ const btnClosePreview = document.getElementById('btn-close-preview') as HTMLButt
 let currentImageUrl: string | null = null;
 
 // Máscara de telefone segura para o TypeScript
-inputPhone?.addEventListener('input', function (e: Event) {
+inputPhone?.addEventListener('input', function(e: Event) {
   const target = e.target as HTMLInputElement;
   if (!target) return;
-
+  
   let x = target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
   if (x) {
     target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
@@ -53,19 +53,19 @@ inputPhone?.addEventListener('input', function (e: Event) {
 function loadData() {
   const savedGuests = localStorage.getItem('TROMBETAS_GUESTS');
   const savedEvent = localStorage.getItem('TROMBETAS_EVENT');
-
+  
   if (savedGuests) {
     try { guests = JSON.parse(savedGuests); } catch (e) { console.error(e); }
   }
   if (savedEvent) {
-    try {
-      eventInfo = JSON.parse(savedEvent);
-      if (inputDate) inputDate.value = eventInfo.date || '';
-      if (inputTime) inputTime.value = eventInfo.time || '';
-      if (inputInviter) inputInviter.value = eventInfo.inviter || '';
+    try { 
+      eventInfo = JSON.parse(savedEvent); 
+      if(inputDate) inputDate.value = eventInfo.date || '';
+      if(inputTime) inputTime.value = eventInfo.time || '';
+      if(inputInviter) inputInviter.value = eventInfo.inviter || '';
     } catch (e) { console.error(e); }
   }
-
+  
   updateUI();
 }
 
@@ -157,7 +157,7 @@ if (btnClearGuests) {
     if (confirm("Tem certeza que deseja limpar toda a lista?")) {
       guests = [];
       saveData();
-      if (previewSection) previewSection.classList.add('hidden');
+      if(previewSection) previewSection.classList.add('hidden');
     }
   });
 }
@@ -183,11 +183,11 @@ async function generateReportImage() {
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
 
-  const width = 900;
-  const rowHeight = 45;
-  const minRows = 3;
-  const totalRows = Math.max(guests.length, minRows);
-  const height = 180 + ((totalRows + 1) * rowHeight) + 80;
+  const width = 1000;
+  const rowHeight = 50;
+  const minRows = 3; 
+  const totalRows = Math.max(guests.length, minRows); 
+  const height = 250 + ((totalRows + 1) * rowHeight) + 80; 
 
   canvas.width = width;
   canvas.height = height;
@@ -196,48 +196,61 @@ async function generateReportImage() {
   ctx.fillStyle = '#FFFFFF';
   ctx.fillRect(0, 0, width, height);
 
-  const marginX = 50;
-  let currentY = 50;
+  const marginX = 40;
+  let currentY = 40;
 
   // 1. Caixa do Título
-  ctx.strokeStyle = '#1e293b';
-  ctx.lineWidth = 3;
-  ctx.strokeRect(marginX, currentY, width - (marginX * 2), 50);
+  const titleBoxHeight = 85;
+  ctx.strokeStyle = '#0f172a';
+  ctx.lineWidth = 4;
+  ctx.strokeRect(marginX, currentY, width - (marginX * 2), titleBoxHeight);
 
-  ctx.fillStyle = '#1e293b';
-  ctx.font = 'bold 22px Arial';
+  // Título Principal - Ajustado para evitar colisão
+  ctx.fillStyle = '#0f172a';
+  ctx.font = 'bold 26px Arial'; // Diminuído de 30px
   ctx.textAlign = 'left';
-  ctx.fillText('CONVIDADOS TROMBETAS E FESTAS 2026', marginX + 15, currentY + 33);
+  ctx.fillText('CONVIDADOS TROMBETAS E FESTAS 2026', marginX + 20, currentY + 51);
 
-  ctx.font = 'bold 14px Arial';
+  // Informações do Lado Direito
   ctx.textAlign = 'right';
   const dateStr = eventInfo.date ? new Date(eventInfo.date + 'T00:00:00').toLocaleDateString('pt-BR') : '--/--/----';
   const timeStr = eventInfo.time ? eventInfo.time + 'h' : '--:--h';
-  ctx.fillText(`Data do evento: ${dateStr} - ${timeStr}`, width - marginX - 15, currentY + 30);
 
-  currentY += 65; // Espaço até a tabela
+  if (eventInfo.inviter && eventInfo.inviter.trim() !== '') {
+    ctx.font = 'bold 16px Arial'; // Diminuído de 18px
+    ctx.fillText(`CONVIDADOS DE: ${eventInfo.inviter}`, width - marginX - 20, currentY + 36);
+    ctx.font = 'bold 16px Arial';
+    ctx.fillText(`Data do evento: ${dateStr} - ${timeStr}`, width - marginX - 20, currentY + 63);
+  } else {
+    ctx.font = 'bold 18px Arial'; // Mantém um pouco maior se for só a data
+    ctx.fillText(`Data do evento: ${dateStr} - ${timeStr}`, width - marginX - 20, currentY + 51);
+  }
+
+  currentY += titleBoxHeight + 25; // Espaço até a tabela
 
   // 2. Cabeçalho da Tabela
-  ctx.fillStyle = '#2c3e50';
+  ctx.lineWidth = 4;
+  ctx.strokeStyle = '#0f172a';
+  ctx.fillStyle = '#1e293b';
   ctx.fillRect(marginX, currentY, width - (marginX * 2), rowHeight);
   ctx.strokeRect(marginX, currentY, width - (marginX * 2), rowHeight);
 
   // Colunas: Ajuste de Larguras
-  const col1W = 80; // Nº
-  const col3W = 220; // Telefone
-  const col2W = width - (marginX * 2) - col1W - col3W; // Nome
-
+  const col1W = 80;
+  const col3W = 200;
+  const col2W = width - (marginX * 2) - col1W - col3W;
+  
   const col1X = marginX;
   const col2X = marginX + col1W;
   const col3X = marginX + col1W + col2W;
 
   // Textos do Cabeçalho
   ctx.fillStyle = '#FFFFFF';
-  ctx.font = 'bold 15px Arial';
+  ctx.font = 'bold 18px Arial';
   ctx.textAlign = 'center';
-  ctx.fillText('Nº', col1X + (col1W / 2), currentY + 28);
-  ctx.fillText('NOME DO CONVIDADO', col2X + (col2W / 2), currentY + 28);
-  ctx.fillText('TELEFONE', col3X + (col3W / 2), currentY + 28);
+  ctx.fillText('Nº', col1X + (col1W / 2), currentY + 32);
+  ctx.fillText('NOME DO CONVIDADO', col2X + (col2W / 2), currentY + 32);
+  ctx.fillText('TELEFONE', col3X + (col3W / 2), currentY + 32);
 
   // Linhas verticais do cabeçalho
   ctx.beginPath();
@@ -250,13 +263,13 @@ async function generateReportImage() {
   currentY += rowHeight;
 
   // 3. Linhas da Tabela
-  ctx.fillStyle = '#1e293b';
+  ctx.fillStyle = '#0f172a';
   for (let i = 0; i < totalRows; i++) {
     const isGuest = i < guests.length;
-
+    
     // Borda da linha inteira
     ctx.strokeRect(marginX, currentY, width - (marginX * 2), rowHeight);
-
+    
     // Linhas verticais separadoras
     ctx.beginPath();
     ctx.moveTo(col2X, currentY);
@@ -267,28 +280,39 @@ async function generateReportImage() {
 
     if (isGuest) {
       const g = guests[i];
-      ctx.font = 'bold 14px Arial';
-
+      ctx.font = 'bold 16px Arial';
+      
       // Nº
       ctx.textAlign = 'center';
-      ctx.fillText((i + 1).toString(), col1X + (col1W / 2), currentY + 28);
-
+      ctx.fillText((i + 1).toString(), col1X + (col1W / 2), currentY + 31);
+      
       // Nome
       ctx.textAlign = 'left';
-      ctx.fillText(g.name, col2X + 20, currentY + 28);
-
+      ctx.fillText(g.name, col2X + 25, currentY + 31);
+      
       // Telefone
       ctx.textAlign = 'center';
-      ctx.fillText(g.phone || '', col3X + (col3W / 2), currentY + 28);
+      ctx.fillText(g.phone || '', col3X + (col3W / 2), currentY + 31);
     }
     currentY += rowHeight;
   }
 
   // 4. Rodapé Final
-  ctx.fillStyle = '#1e293b';
-  ctx.font = 'bold 10px Arial';
+  currentY += 40;
+  
+  // Linha fina separadora acima do rodapé
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(marginX, currentY);
+  ctx.lineTo(width - marginX, currentY);
+  ctx.stroke();
+
+  ctx.fillStyle = '#0f172a';
+  ctx.font = 'bold 12px Arial';
   ctx.textAlign = 'center';
-  ctx.fillText('IGREJA CRISTÃ MARANATA - TROMBETAS E FESTAS 2026', width / 2, currentY + 30);
+  
+  // Rodapé ajustado conforme o padrão solicitado
+  ctx.fillText('SISTEMA DE GESTÃO DO CULTO PROFÉTICO - ICM', width / 2, currentY + 25);
 
   // Finalizar Imagem
   currentImageUrl = canvas.toDataURL('image/png');
@@ -336,4 +360,4 @@ if (btnWhatsapp) {
 
 // Boot
 loadData();
-export { };
+export {};
