@@ -1,109 +1,120 @@
 <!DOCTYPE html>
 <html lang="pt-BR" translate="no">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Outros Aplicativos - ICM</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
-    <style>
-      body { 
-        font-family: 'Inter', sans-serif; 
-        background-color: #fff5f5; 
-        color: #1e293b; 
-      }
-    </style>
-  </head>
-  <body>
-    <div class="min-h-screen bg-[#fff5f5] flex flex-col items-center pt-8 pb-12 px-6">
-      <header class="w-full max-w-md flex items-center gap-4 mb-8">
-        <a href="/index.html" class="text-[#8f1919] p-2 bg-white rounded-full shadow-sm flex items-center justify-center w-10 h-10">
-          <i class="fas fa-arrow-left"></i>
-        </a>
-        <h1 class="text-2xl font-bold text-[#8f1919]">Outros Aplicativos</h1>
-      </header>
 
-      <div class="max-w-md w-full space-y-5">
-        
-        <div>
-          <button onclick="toggleMenuDados()" class="w-full bg-white p-5 rounded-[1.8rem] shadow-md hover:shadow-lg transition-all duration-300 text-left flex items-center justify-between gap-5 border border-white/50 active:scale-[0.98] block">
-            <div class="flex items-center gap-5">
-              <div class="w-16 h-16 rounded-2xl bg-red-100 flex items-center justify-center text-[#8f1919] shrink-0">
-                <i class="fas fa-book-open text-2xl"></i>
-              </div>
-              <div class="flex flex-col">
-                <h3 class="text-2xl font-bold text-[#8f1919] leading-tight">Dados do Culto</h3>
-                <p class="text-red-400 text-base font-medium">Relatórios e presenças</p>
-              </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Outros Aplicativos - ICM</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #fff5f5;
+      color: #1e293b;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="min-h-screen bg-[#fff5f5] flex flex-col items-center pt-8 pb-12 px-6">
+    <header class="w-full max-w-md flex items-center gap-4 mb-8">
+      <a href="/home.html"
+        class="text-[#8f1919] p-2 bg-white rounded-full shadow-sm flex items-center justify-center w-10 h-10">
+        <i class="fas fa-arrow-left"></i>
+      </a>
+      <h1 class="text-2xl font-bold text-[#8f1919]">Outros Aplicativos</h1>
+    </header>
+
+    <div class="max-w-md w-full space-y-5">
+
+      <div>
+        <button onclick="toggleMenuDados()"
+          class="w-full bg-white p-5 rounded-[1.8rem] shadow-md hover:shadow-lg transition-all duration-300 text-left flex items-center justify-between gap-5 border border-white/50 active:scale-[0.98] block">
+          <div class="flex items-center gap-5">
+            <div class="w-16 h-16 rounded-2xl bg-red-100 flex items-center justify-center text-[#8f1919] shrink-0">
+              <i class="fas fa-book-open text-2xl"></i>
             </div>
-            <div class="text-[#8f1919] mr-2">
-              <i id="seta-dados" class="fas fa-chevron-down transition-transform duration-300"></i>
+            <div class="flex flex-col">
+              <h3 class="text-2xl font-bold text-[#8f1919] leading-tight">Dados do Culto</h3>
+              <p class="text-red-400 text-base font-medium">Relatórios e presenças</p>
             </div>
-          </button>
-
-          <div id="submenu-dados" class="hidden flex-col gap-3 mt-3 px-2">
-            <a href="/service-data.html" class="w-full bg-red-50/80 p-4 rounded-2xl shadow-sm hover:shadow-md transition-all text-left flex items-center gap-4 border border-red-100 active:scale-[0.98]">
-              <div class="w-12 h-12 rounded-xl bg-white flex items-center justify-center text-[#8f1919] shrink-0">
-                <i class="fas fa-file-alt text-lg"></i>
-              </div>
-              <div>
-                <h4 class="text-lg font-bold text-[#8f1919] leading-tight">Dados Gerais do Culto</h4>
-              </div>
-            </a>
-
-            <a href="/service-attendance.html" class="w-full bg-red-50/80 p-4 rounded-2xl shadow-sm hover:shadow-md transition-all text-left flex items-center gap-4 border border-red-100 active:scale-[0.98]">
-              <div class="w-12 h-12 rounded-xl bg-white flex items-center justify-center text-[#8f1919] shrink-0">
-                <i class="fas fa-users text-lg"></i>
-              </div>
-              <div>
-                <h4 class="text-lg font-bold text-[#8f1919] leading-tight">Lista de Presença</h4>
-              </div>
-            </a>
           </div>
+          <div class="text-[#8f1919] mr-2">
+            <i id="seta-dados" class="fas fa-chevron-down transition-transform duration-300"></i>
+          </div>
+        </button>
+
+        <div id="submenu-dados" class="hidden flex-col gap-3 mt-3 px-2">
+          <a href="/service-data.html"
+            class="w-full bg-red-50/80 p-4 rounded-2xl shadow-sm hover:shadow-md transition-all text-left flex items-center gap-4 border border-red-100 active:scale-[0.98]">
+            <div class="w-12 h-12 rounded-xl bg-white flex items-center justify-center text-[#8f1919] shrink-0">
+              <i class="fas fa-file-alt text-lg"></i>
+            </div>
+            <div>
+              <h4 class="text-lg font-bold text-[#8f1919] leading-tight">Dados Gerais do Culto</h4>
+            </div>
+          </a>
+
+          <a href="/service-attendance.html"
+            class="w-full bg-red-50/80 p-4 rounded-2xl shadow-sm hover:shadow-md transition-all text-left flex items-center gap-4 border border-red-100 active:scale-[0.98]">
+            <div class="w-12 h-12 rounded-xl bg-white flex items-center justify-center text-[#8f1919] shrink-0">
+              <i class="fas fa-users text-lg"></i>
+            </div>
+            <div>
+              <h4 class="text-lg font-bold text-[#8f1919] leading-tight">Lista de Presença</h4>
+            </div>
+          </a>
         </div>
-
-        <!-- Botão Trombetas & Festas Atualizado -->
-        <a href="/trombetas.html" class="w-full bg-white p-5 rounded-[1.8rem] shadow-md hover:shadow-lg transition-all duration-300 text-left flex items-center gap-5 border border-white/50 active:scale-[0.98] block">
-          <div class="w-16 h-16 rounded-2xl bg-red-100 flex items-center justify-center shrink-0 p-2.5">
-            <img src="/icone-trombetas.png" alt="Trombetas & Festas" class="w-full h-full object-contain opacity-90" />
-          </div>
-          <div class="flex flex-col">
-            <h3 class="text-2xl font-bold text-[#8f1919] leading-tight">Trombetas & Festas</h3>
-            <p class="text-red-400 text-base font-medium">Gestão de eventos e convidados</p>
-          </div>
-        </a>
-
-        <a href="/prayer.html" class="w-full bg-white p-5 rounded-[1.8rem] shadow-md hover:shadow-lg transition-all duration-300 text-left flex items-center gap-5 border border-white/50 active:scale-[0.98] block">
-          <div class="w-16 h-16 rounded-2xl bg-red-100 flex items-center justify-center text-[#8f1919] shrink-0">
-            <i class="fas fa-clock text-2xl"></i>
-          </div>
-          <div class="flex flex-col">
-            <h3 class="text-2xl font-bold text-[#8f1919] leading-tight">Oração Ininterrupta</h3>
-            <p class="text-red-400 text-base font-medium">Escala e horários de clamor</p>
-          </div>
-        </a>
       </div>
 
-      <div class="max-w-md w-full mt-8">
-        <a href="/index.html" class="w-full bg-white text-[#8f1919] font-bold py-3 rounded-xl border border-red-200 block text-center shadow-sm">Voltar ao Início</a>
-      </div>
+      <!-- Botão Trombetas & Festas Atualizado -->
+      <a href="/trombetas.html"
+        class="w-full bg-white p-5 rounded-[1.8rem] shadow-md hover:shadow-lg transition-all duration-300 text-left flex items-center gap-5 border border-white/50 active:scale-[0.98] block">
+        <div class="w-16 h-16 rounded-2xl bg-red-100 flex items-center justify-center shrink-0 p-2.5">
+          <img src="/icone-trombetas.png" alt="Trombetas & Festas" class="w-full h-full object-contain opacity-90" />
+        </div>
+        <div class="flex flex-col">
+          <h3 class="text-2xl font-bold text-[#8f1919] leading-tight">Trombetas & Festas</h3>
+          <p class="text-red-400 text-base font-medium">Gestão de eventos e convidados</p>
+        </div>
+      </a>
+
+      <a href="https://oracao24hicm.web.app" target="_blank" rel="noopener noreferrer"
+        class="w-full bg-white p-5 rounded-[1.8rem] shadow-md hover:shadow-lg transition-all duration-300 text-left flex items-center gap-5 border border-white/50 active:scale-[0.98] block">
+        <div class="w-16 h-16 rounded-2xl bg-red-100 flex items-center justify-center text-[#8f1919] shrink-0">
+          <i class="fas fa-clock text-2xl"></i>
+        </div>
+        <div class="flex flex-col">
+          <h3 class="text-2xl font-bold text-[#8f1919] leading-tight">Oração Ininterrupta</h3>
+          <p class="text-red-400 text-base font-medium">Escala e horários de clamor</p>
+        </div>
+      </a>
     </div>
 
-    <script>
-      function toggleMenuDados() {
-        const submenu = document.getElementById('submenu-dados');
-        const seta = document.getElementById('seta-dados');
-        
-        if (submenu.classList.contains('hidden')) {
-          submenu.classList.remove('hidden');
-          submenu.classList.add('flex');
-          seta.style.transform = 'rotate(180deg)';
-        } else {
-          submenu.classList.add('hidden');
-          submenu.classList.remove('flex');
-          seta.style.transform = 'rotate(0deg)';
-        }
+    <div class="max-w-md w-full mt-8">
+      <a href="/home.html"
+        class="w-full bg-white text-[#8f1919] font-bold py-3 rounded-xl border border-red-200 block text-center shadow-sm">Voltar
+        ao Início</a>
+    </div>
+  </div>
+
+  <script>
+    function toggleMenuDados() {
+      const submenu = document.getElementById('submenu-dados');
+      const seta = document.getElementById('seta-dados');
+
+      if (submenu.classList.contains('hidden')) {
+        submenu.classList.remove('hidden');
+        submenu.classList.add('flex');
+        seta.style.transform = 'rotate(180deg)';
+      } else {
+        submenu.classList.add('hidden');
+        submenu.classList.remove('flex');
+        seta.style.transform = 'rotate(0deg)';
       }
-    </script>
-  </body>
+    }
+  </script>
+</body>
+
 </html>

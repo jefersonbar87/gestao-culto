@@ -1,95 +1,94 @@
 <!DOCTYPE html>
 <html lang="pt-BR" translate="no">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lista de Louvores - ICM</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
-    <style>
-      body { 
-        font-family: 'Inter', sans-serif; 
-        background-color: #ffeeefff; 
-        color: #1e293b; 
-      }
-    </style>
-  </head>
-  <body>
-    <div class="min-h-screen bg-[#ffeeefff] flex flex-col items-center pt-8 pb-8 px-4 font-sans">
-      <h1 id="page-title" class="text-3xl font-bold text-[#a62626] mb-6 uppercase text-center">Lista de Louvores</h1>
-      
-      <button id="btn-toggle-mode" class="bg-[#dc2626] text-white font-bold py-2 px-6 rounded-md shadow-md mb-8 uppercase text-sm">
-        Ir para Louvor Após a Palavra
-      </button>
 
-      <div class="bg-white rounded-3xl shadow-xl w-full max-w-4xl p-6 md:p-8">
-        <div class="border border-red-100 rounded-xl p-4 mb-6 bg-red-50/30">
-          <div class="flex gap-4 mb-4 text-sm font-bold text-[#a62626]">
-             <label class="flex items-center gap-2 cursor-pointer">
-               <input type="radio" id="radio-coletanea" name="hymnType" checked /> Coletânea
-             </label>
-             <label class="flex items-center gap-2 cursor-pointer">
-               <input type="radio" id="radio-cias" name="hymnType" /> Cias
-             </label>
-          </div>
-          <div class="relative">
-            <input 
-              type="text" 
-              id="search-query" 
-              placeholder="BUSCAR LOUVOR..." 
-              class="w-full pl-4 pr-12 py-3 border border-red-200 rounded-md outline-none text-black uppercase" 
-            />
-            <button 
-              id="btn-voice-search" 
-              class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center text-gray-400"
-            >
-              <i class="fas fa-microphone"></i>
-            </button>
-            
-            <!-- Search Results Dropdown -->
-            <div 
-              id="search-results" 
-              class="absolute top-full left-0 right-0 bg-white border rounded-md shadow-lg z-10 max-h-48 overflow-y-auto hidden"
-            ></div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lista de Louvores - ICM</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #ffeeefff;
+      color: #1e293b;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="min-h-screen bg-[#ffeeefff] flex flex-col items-center pt-8 pb-8 px-4 font-sans">
+    <h1 id="page-title" class="text-3xl font-bold text-[#a62626] mb-6 uppercase text-center">Lista de Louvores</h1>
+
+    <button id="btn-toggle-mode"
+      class="bg-[#dc2626] text-white font-bold py-2 px-6 rounded-md shadow-md mb-8 uppercase text-sm">
+      Ir para Louvor Após a Palavra
+    </button>
+
+    <div class="bg-white rounded-3xl shadow-xl w-full max-w-4xl p-6 md:p-8">
+      <div class="border border-red-100 rounded-xl p-4 mb-6 bg-red-50/30">
+        <div class="flex gap-4 mb-4 text-sm font-bold text-[#a62626]">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="radio" id="radio-coletanea" name="hymnType" checked /> Coletânea
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="radio" id="radio-cias" name="hymnType" /> Cias
+          </label>
+        </div>
+        <div class="relative">
+          <input type="text" id="search-query" placeholder="BUSCAR LOUVOR..."
+            class="w-full pl-4 pr-12 py-3 border border-red-200 rounded-md outline-none text-black uppercase" />
+          <button id="btn-voice-search"
+            class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center text-gray-400">
+            <i class="fas fa-microphone"></i>
+          </button>
+
+          <!-- Search Results Dropdown -->
+          <div id="search-results"
+            class="absolute top-full left-0 right-0 bg-white border rounded-md shadow-lg z-10 max-h-48 overflow-y-auto hidden">
           </div>
         </div>
-
-        <button 
-          id="btn-clear-list" 
-          class="mb-4 bg-red-100 text-red-700 px-4 py-2 rounded-md text-xs font-bold uppercase"
-        >
-          <i class="fas fa-trash mr-2"></i>Limpar Tudo
-        </button>
-
-        <!-- Dynamic Rows Table -->
-        <div id="table-container" class="border border-slate-300 rounded overflow-hidden"></div>
       </div>
 
-      <div class="w-full max-w-4xl mt-6 flex flex-col gap-6">
-         <button id="btn-generate-image" class="w-full bg-[#dc2626] text-white font-bold py-4 rounded-lg shadow-lg flex items-center justify-center gap-2">
-            <i class="fas fa-image"></i> GERAR IMAGEM
-         </button>
+      <button id="btn-clear-list" class="mb-4 bg-red-100 text-red-700 px-4 py-2 rounded-md text-xs font-bold uppercase">
+        <i class="fas fa-trash mr-2"></i>Limpar Tudo
+      </button>
 
-         <!-- Preview section -->
-         <div id="preview-section" class="bg-white rounded-3xl shadow-2xl p-6 border-2 border-red-50 hidden">
-             <h3 class="text-[#a62626] font-bold text-xl mb-4 text-center">Conferência Final</h3>
-             <div class="bg-slate-50 p-4 rounded-xl flex justify-center mb-6">
-                <img id="preview-image" alt="Preview" class="max-w-full h-auto shadow-lg border" />
-             </div>
-             <div class="flex flex-col md:flex-row gap-4">
-                <button id="btn-share-whatsapp" class="flex-1 bg-[#25d366] text-white font-black py-4 rounded-xl shadow-lg flex items-center justify-center gap-3">
-                    <i class="fab fa-whatsapp text-2xl"></i> WHATSAPP
-                </button>
-                <button id="btn-download-image" class="flex-1 bg-blue-600 text-white font-black py-4 rounded-xl shadow-lg flex items-center justify-center gap-3">
-                    <i class="fas fa-download"></i> BAIXAR
-                </button>
-             </div>
-         </div>
-         
-         <a href="/index.html" class="w-full bg-white text-[#a62626] font-bold py-3 rounded-lg border border-red-200 block text-center">Voltar ao Início</a>
-      </div>
+      <!-- Dynamic Rows Table -->
+      <div id="table-container" class="border border-slate-300 rounded overflow-hidden"></div>
     </div>
 
-    <script type="module" src="/hymns.ts"></script>
-  </body>
+    <div class="w-full max-w-4xl mt-6 flex flex-col gap-6">
+      <button id="btn-generate-image"
+        class="w-full bg-[#dc2626] text-white font-bold py-4 rounded-lg shadow-lg flex items-center justify-center gap-2">
+        <i class="fas fa-image"></i> GERAR IMAGEM
+      </button>
+
+      <!-- Preview section -->
+      <div id="preview-section" class="bg-white rounded-3xl shadow-2xl p-6 border-2 border-red-50 hidden">
+        <h3 class="text-[#a62626] font-bold text-xl mb-4 text-center">Conferência Final</h3>
+        <div class="bg-slate-50 p-4 rounded-xl flex justify-center mb-6">
+          <img id="preview-image" alt="Preview" class="max-w-full h-auto shadow-lg border" />
+        </div>
+        <div class="flex flex-col md:flex-row gap-4">
+          <button id="btn-share-whatsapp"
+            class="flex-1 bg-[#25d366] text-white font-black py-4 rounded-xl shadow-lg flex items-center justify-center gap-3">
+            <i class="fab fa-whatsapp text-2xl"></i> WHATSAPP
+          </button>
+          <button id="btn-download-image"
+            class="flex-1 bg-blue-600 text-white font-black py-4 rounded-xl shadow-lg flex items-center justify-center gap-3">
+            <i class="fas fa-download"></i> BAIXAR
+          </button>
+        </div>
+      </div>
+
+      <a href="/home.html"
+        class="w-full bg-white text-[#a62626] font-bold py-3 rounded-lg border border-red-200 block text-center">Voltar
+        ao Início</a>
+    </div>
+  </div>
+
+  <script type="module" src="/hymns.ts"></script>
+</body>
+
 </html>

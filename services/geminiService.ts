@@ -1,12 +1,13 @@
-
 import { GoogleGenAI, Modality, GenerateContentResponse, LiveServerMessage, Blob } from "@google/genai";
 import { GroundingSource } from "../types";
 
-// A API_KEY deve estar configurada no painel do Netlify
+// A chave agora usa o padrão seguro para frontend (Vite)
 const getClient = () => {
-  const apiKey = process.env.API_KEY;
+  // O 'import.meta.env' é a forma correta do Vite ler o arquivo .env
+  const apiKey = (import.meta as any).env?.VITE_GEMINI_API_KEY;
+
   if (!apiKey) {
-    console.warn("Aviso: API_KEY (Gemini) não encontrada nas variáveis de ambiente.");
+    console.warn("Aviso: VITE_GEMINI_API_KEY não encontrada nas variáveis de ambiente.");
     return null;
   }
   return new GoogleGenAI({ apiKey });
@@ -16,18 +17,18 @@ const getClient = () => {
  * Chat Text/Image Service
  */
 export const sendMessageToGemini = async (
-  prompt: string, 
+  prompt: string,
   imageBase64?: string
 ): Promise<{ text: string; sources?: GroundingSource[] }> => {
   const ai = getClient();
   if (!ai) throw new Error("Serviço de IA não configurado.");
-  
+
   const parts: any[] = [];
   if (imageBase64) {
     parts.push({
       inlineData: {
         data: imageBase64,
-        mimeType: 'image/jpeg', 
+        mimeType: 'image/jpeg',
       },
     });
   }
@@ -66,7 +67,7 @@ REGRAS RÍGIDAS:
       });
     }
 
-    return { 
+    return {
       text: response.text || "Não consegui processar sua dúvida sobre o sistema.",
       sources: sources.length > 0 ? sources : undefined
     };
@@ -97,7 +98,7 @@ export class LiveSessionManager {
   async connect() {
     const ai = getClient();
     if (!ai) throw new Error("AI Key não configurada.");
-    
+
     this.audioCtx = new AudioContext({ sampleRate: 16000 });
     this.outputCtx = new AudioContext({ sampleRate: 24000 });
     this.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -111,9 +112,9 @@ export class LiveSessionManager {
           processor.onaudioprocess = (e) => {
             const inputData = e.inputBuffer.getChannelData(0);
             let sum = 0;
-            for(let i=0; i<inputData.length; i++) sum += inputData[i] * inputData[i];
+            for (let i = 0; i < inputData.length; i++) sum += inputData[i] * inputData[i];
             this.onVolume(Math.sqrt(sum / inputData.length));
-            
+
             const pcmBlob = this.createBlob(inputData);
             this.sessionPromise!.then(s => s.sendRealtimeInput({ media: pcmBlob }));
           };
@@ -121,7 +122,7 @@ export class LiveSessionManager {
           processor.connect(this.audioCtx!.destination);
         },
         onmessage: async (msg: LiveServerMessage) => {
-          const base64 = msg.serverContent?.modelTurn?.parts[0]?.inlineData?.data;
+          const base64 = msg.serverContent?.modelTurn?.parts?.[0]?.inlineData?.data;
           if (base64 && this.outputCtx) {
             const buffer = await this.decodeAudio(base64);
             this.nextStartTime = Math.max(this.nextStartTime, this.outputCtx.currentTime);
@@ -158,21 +159,21 @@ export class LiveSessionManager {
 
   private createBlob(data: Float32Array): Blob {
     const int16 = new Int16Array(data.length);
-    for(let i=0; i<data.length; i++) int16[i] = data[i] * 32768;
+    for (let i = 0; i < data.length; i++) int16[i] = data[i] * 32768;
     let binary = '';
     const bytes = new Uint8Array(int16.buffer);
-    for(let i=0; i<bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
+    for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
     return { data: btoa(binary), mimeType: 'audio/pcm;rate=16000' };
   }
 
   private async decodeAudio(base64: string): Promise<AudioBuffer> {
     const binary = atob(base64);
     const bytes = new Uint8Array(binary.length);
-    for(let i=0; i<binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
     const dataInt16 = new Int16Array(bytes.buffer);
     const buffer = this.outputCtx!.createBuffer(1, dataInt16.length, 24000);
     const channelData = buffer.getChannelData(0);
-    for(let i=0; i<dataInt16.length; i++) channelData[i] = dataInt16[i] / 32768.0;
+    for (let i = 0; i < dataInt16.length; i++) channelData[i] = dataInt16[i] / 32768.0;
     return buffer;
   }
 }

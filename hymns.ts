@@ -86,17 +86,19 @@ function renderTable() {
   rows.forEach((row, idx) => {
     const rowEl = document.createElement('div');
     rowEl.className = `flex border-b last:border-0 items-center ${activeRowIndex === idx ? 'bg-blue-50' : 'bg-white'}`;
-    
-    // Up/Down Arrows Group
+
+    // Up/Down Arrows Group - Ajustado com área de toque gigante para mobile
     const arrowGroup = document.createElement('div');
-    arrowGroup.className = 'w-10 border-r flex flex-col items-center bg-slate-50 text-[10px] text-slate-400 py-1';
+    arrowGroup.className = 'w-14 sm:w-16 border-r flex flex-col items-center bg-slate-50 text-sm text-slate-500 py-1 px-1 gap-1';
 
     const btnUp = document.createElement('button');
     btnUp.innerHTML = '<i class="fas fa-chevron-up"></i>';
+    btnUp.className = 'w-full py-2 flex items-center justify-center hover:bg-slate-200 active:bg-slate-300 rounded transition-colors';
     btnUp.addEventListener('click', () => moveRow(idx, 'up'));
 
     const btnDown = document.createElement('button');
     btnDown.innerHTML = '<i class="fas fa-chevron-down"></i>';
+    btnDown.className = 'w-full py-2 flex items-center justify-center hover:bg-slate-200 active:bg-slate-300 rounded transition-colors';
     btnDown.addEventListener('click', () => moveRow(idx, 'down'));
 
     arrowGroup.appendChild(btnUp);
@@ -106,7 +108,7 @@ function renderTable() {
     const numInput = document.createElement('input');
     numInput.type = 'text';
     numInput.value = row.number;
-    numInput.className = 'w-16 border-r text-center font-bold p-2 outline-none bg-transparent';
+    numInput.className = 'w-16 sm:w-20 border-r text-center font-bold p-2 outline-none bg-transparent';
     numInput.placeholder = 'Nº';
     numInput.addEventListener('focus', () => { activeRowIndex = idx; updateRowStyles(); });
     numInput.addEventListener('input', (e) => {
@@ -118,7 +120,7 @@ function renderTable() {
     const nameInput = document.createElement('input');
     nameInput.type = 'text';
     nameInput.value = row.name;
-    nameInput.className = 'flex-1 p-2 outline-none uppercase bg-transparent';
+    nameInput.className = 'flex-1 p-2 outline-none uppercase bg-transparent min-w-0';
     nameInput.placeholder = 'NOME DO HINO';
     nameInput.addEventListener('focus', () => { activeRowIndex = idx; updateRowStyles(); });
     nameInput.addEventListener('input', (e) => {
@@ -279,9 +281,9 @@ async function generateImage() {
   const headerHeight = 80;
   const tableHeaderHeight = 80;
   const rowHeight = 70;
-  
+
   const sidePadding = 40;
-  const topPadding = 160; // Espaço do topo aumentado
+  const topPadding = 160;
   const bottomPadding = 40;
 
   canvas.width = tableWidth + (sidePadding * 2);
@@ -293,14 +295,14 @@ async function generateImage() {
 
   // 1. Draw top logo
   const img = new Image();
-  img.src = './logoicm.png'; 
-  
+  img.src = './logoicm.png';
+
   await new Promise(resolve => {
     img.onload = resolve;
-    img.onerror = resolve; 
+    img.onerror = resolve;
   });
-  
-  const imgHeight = 70; 
+
+  const imgHeight = 70;
   const imgWidth = img.height ? (img.width / img.height) * imgHeight : 70;
   const centerY = (topPadding - imgHeight) / 2;
   ctx.drawImage(img, sidePadding, centerY, imgWidth, imgHeight);
@@ -343,7 +345,7 @@ async function generateImage() {
   ctx.fillText('Nº', colDividerX / 2, startY + (tableHeaderHeight / 2));
   ctx.fillText('Nome do Hino', colDividerX + (tableWidth - colDividerX) / 2, startY + (tableHeaderHeight / 2));
 
-  // 4. Data Rows
+  // 4. Data Rows (Ajustado com inteligência de quebra de linha)
   rows.forEach((row, i) => {
     const y = startY + tableHeaderHeight + (i * rowHeight);
     ctx.strokeRect(0, y, tableWidth, rowHeight);
@@ -353,11 +355,53 @@ async function generateImage() {
     ctx.stroke();
 
     ctx.fillStyle = '#000000';
-    ctx.font = '30px Arial';
     ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    // Número do Hino (Mantém 30px)
+    ctx.font = '30px Arial';
     if (row.number) ctx.fillText(row.number, colDividerX / 2, y + (rowHeight / 2));
+
+    // Nome do Hino (Lógica Dinâmica de Enquadramento)
     ctx.textAlign = 'left';
-    if (row.name) ctx.fillText(row.name, colDividerX + 30, y + (rowHeight / 2));
+    if (row.name) {
+      const maxTextWidth = tableWidth - colDividerX - 40; // Área limite segura
+
+      // Mede primeiro com a fonte padrão
+      ctx.font = '30px Arial';
+      const originalWidth = ctx.measureText(row.name).width;
+
+      if (originalWidth <= maxTextWidth) {
+        // Cabe perfeitamente na linha
+        ctx.fillText(row.name, colDividerX + 30, y + (rowHeight / 2));
+      } else {
+        // É muito longo: reduz para 24px e quebra a linha
+        ctx.font = '24px Arial';
+        const words = row.name.split(' ');
+        let lines = [];
+        let currentLine = '';
+
+        for (let w of words) {
+          const testLine = currentLine + w + ' ';
+          if (ctx.measureText(testLine).width > maxTextWidth && currentLine !== '') {
+            lines.push(currentLine.trim());
+            currentLine = w + ' ';
+          } else {
+            currentLine = testLine;
+          }
+        }
+        lines.push(currentLine.trim());
+
+        // Distribui as linhas perfeitamente no centro da célula
+        const lineHeight = 30; // Altura entre as linhas geradas
+        const totalTextHeight = (lines.length - 1) * lineHeight;
+        const startTextY = y + (rowHeight / 2) - (totalTextHeight / 2);
+
+        lines.forEach((lineText, index) => {
+          ctx.fillText(lineText, colDividerX + 30, startTextY + (index * lineHeight));
+        });
+      }
+    }
   });
 
   ctx.restore();
@@ -412,4 +456,4 @@ if (btnShareWhatsapp) {
 
 // Start
 renderTable();
-export {};
+export { };

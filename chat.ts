@@ -129,7 +129,7 @@ if (formChat) {
       appendMessage('ai', response.text);
     } catch (err: any) {
       thinking.remove();
-      appendMessage('ai', "Desculpe, ocorreu uma falha de conexão. Por favor, verifique sua API_KEY ou tente novamente.");
+      appendMessage('ai', "Ops, estamos EM DESENVOLVIMENTO, na dúvida chame o desenvolvedor la no rodapé.");
     }
   });
 }
@@ -161,7 +161,7 @@ function toggleVoiceSession() {
         const scale2 = 1 + volume * 3.0;
         voiceRipple1.style.transform = `scale(${scale1})`;
         voiceRipple2.style.transform = `scale(${scale2})`;
-        
+
         if (volume > 0.05) {
           voiceRipple1.classList.remove('hidden');
           voiceRipple2.classList.remove('hidden');
@@ -197,4 +197,4 @@ if (btnVoiceToggle) {
   btnVoiceToggle.addEventListener('click', toggleVoiceSession);
 }
 
-export {};
+export { };
