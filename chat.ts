@@ -129,7 +129,7 @@ if (formChat) {
       appendMessage('ai', response.text);
     } catch (err: any) {
       thinking.remove();
-      appendMessage('ai', "Ops, estamos EM DESENVOLVIMENTO, na dúvida chame o desenvolvedor la no rodapé.");
+      appendMessage('ai', "Meus irmãos, esta funcionalidade está em desenvolvimento. Se houver dúvidas ou sugestões, clique no desenvolvedor que está no rodapé do aplicativo.");
     }
   });
 }

@@ -8,12 +8,12 @@
   <meta name="theme-color" content="#8f1919" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Culto ICM" />
+  <meta name="apple-mobile-web-app-title" content="Gestão ICM" />
   <link rel="manifest" href="/manifest.json" />
   <link rel="apple-touch-icon"
     href="https://raw.githubusercontent.com/google/material-design-icons/master/png/action/settings/android/res/mipmap-xxxhdpi/ic_launcher_settings_f9_24dp.png" />
 
-  <title>Sistema Culto Profético - ICM</title>
+  <title>Gestão Culto Profético - ICM</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
   <style>
@@ -23,30 +23,40 @@
       font-family: 'Inter', sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #fce8e8;
-      background-image: url("data:image/svg+xml,%3Csvg width='42' height='44' viewBox='0 0 42 44' xmlns='http://www.w3.org/2000/svg'%3E%3Cg id='Page-1' fill='none' fill-rule='evenodd'%3E%3Cg id='brick-wall' fill='%238f1919' fill-opacity='0.15'%3E%3Cpath d='M0 0h42v44H0V0zm1 1h40v20H1V1zM0 23h20v20H0V23zm22 0h20v20H22V23z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      background-color: #1a0505;
+      background-image: url('./fundo-igreja.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
       color: #1e293b;
-      overflow-x: hidden;
+      overflow: hidden;
       -webkit-tap-highlight-color: transparent;
     }
 
-    .animate-fade-in {
-      animation: fadeIn 0.4s ease-out forwards;
+    /* Estilo de vidro translúcido moderno compactado proporcionalmente */
+    .glass-card-pro {
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 10px 25px -8px rgba(0, 0, 0, 0.4), 0 0 10px rgba(255, 255, 255, 0.25) inset;
+      border: 1.5px solid rgba(255, 255, 255, 0.85);
+      transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
     }
 
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    .glass-card-pro:active {
+      transform: scale(0.96);
     }
 
-    /* Otimizações para mobile standalone */
+    /* Ocultar barra de rolagem visualmente mantendo a fluidez */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
     @media (display-mode: standalone) {
       body {
         padding-top: env(safe-area-inset-top);
@@ -57,78 +67,167 @@
 </head>
 
 <body>
-  <div class="min-h-screen flex flex-col items-center animate-fade-in pb-12">
-    <!-- Header Section -->
-    <div class="w-full flex flex-col items-center text-center pt-10 pb-8 px-6">
-      <img id="app-logo" src="./icmplaca.png" alt="Logo ICM"
-        class="h-28 mb-4 drop-shadow-sm transition-all active:scale-95 cursor-pointer select-none" />
-      <h1 class="text-4xl md:text-5xl font-bold text-[#8f1919] tracking-tight leading-tight">
-        Sistema Culto<br />Profético
-      </h1>
-      <p class="text-[#b91c1c] text-xl mt-4 font-medium">
-        Igreja Cristã Maranata
-      </p>
-    </div>
+  <!-- CABEÇALHO FIXO TRANSPARENTE COM A LOGO MAIS ALTA -->
+  <header class="fixed top-0 left-0 w-full z-30 bg-gradient-to-b from-[#1a0505]/95 via-[#1a0505]/50 to-transparent pt-0 pb-6 px-6 flex justify-center items-center pointer-events-none">
+    <img src="/logo-gestao.png" alt="Gestão Culto Profético" class="h-32 md:h-36 w-auto object-contain drop-shadow-[0_4px_12px_rgba(0,0,0,0.98)] scale-125 -mt-3" />
+  </header>
 
-    <!-- Menu Options Section -->
-    <div class="max-w-md w-full px-6 space-y-5">
-      <a href="/hymns.html"
-        class="w-full bg-white p-5 rounded-[1.8rem] shadow-md hover:shadow-lg transition-all duration-300 text-left flex items-center gap-5 border border-white/50 active:scale-[0.98] block">
-        <div class="w-16 h-16 rounded-2xl bg-[#fde2e2] flex items-center justify-center text-[#8f1919] shrink-0">
-          <i id="icon-hymns" class="fas fa-list-ul text-2xl"></i>
-        </div>
-        <div class="flex flex-col">
-          <h3 class="text-2xl font-bold text-[#8f1919] leading-tight">Lista de Louvores</h3>
-          <p class="text-[#b91c1c] text-base font-medium">Organize os hinos do culto</p>
-        </div>
-      </a>
+  <!-- ÁREA DE CONTEÚDO COM A POSIÇÃO MILIMÉTRICA TRAVADA -->
+  <main class="absolute top-52 bottom-14 left-0 w-full overflow-y-auto no-scrollbar flex flex-col items-center px-5 z-10">
+    <div class="max-w-md w-full flex flex-col gap-2.5 py-2">
+      
+      <!-- Fileira 1: Lista de Louvores e Registro de Dons -->
+      <div class="grid grid-cols-2 gap-2.5">
+        <a href="/hymns.html" class="w-full glass-card-pro p-3 rounded-[1.5rem] flex flex-col items-center text-center justify-between group">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-red-100/90 to-red-200/90 flex items-center justify-center text-[#8f1919] shadow-md mb-1.5 group-hover:scale-110 transition-transform">
+            <i class="fas fa-list-ul text-lg"></i>
+          </div>
+          <div class="flex flex-col">
+            <h3 class="text-xs font-extrabold text-[#7f1d1d] leading-tight">Lista de Louvores</h3>
+            <p class="text-[#991b1b] text-[10px] font-semibold mt-0.5 opacity-90">Organize os hinos</p>
+          </div>
+        </a>
 
-      <a href="/gifts.html"
-        class="w-full bg-white p-5 rounded-[1.8rem] shadow-md hover:shadow-lg transition-all duration-300 text-left flex items-center gap-5 border border-white/50 active:scale-[0.98] block">
-        <div class="w-16 h-16 rounded-2xl bg-[#fde2e2] flex items-center justify-center text-[#8f1919] shrink-0">
-          <i id="icon-gifts" class="fas fa-id-card text-2xl"></i>
-        </div>
-        <div class="flex flex-col">
-          <h3 class="text-2xl font-bold text-[#8f1919] leading-tight">Registro de Dons</h3>
-          <p class="text-[#b91c1c] text-base font-medium">Registre os dons espirituais</p>
-        </div>
-      </a>
-
-      <a href="/other-apps.html"
-        class="w-full bg-white p-5 rounded-[1.8rem] shadow-md hover:shadow-lg transition-all duration-300 text-left flex items-center gap-5 border border-white/50 active:scale-[0.98] block">
-        <div class="w-16 h-16 rounded-2xl bg-[#fde2e2] flex items-center justify-center text-[#8f1919] shrink-0">
-          <i id="icon-other" class="fas fa-th-large text-2xl"></i>
-        </div>
-        <div class="flex flex-col">
-          <h3 class="text-2xl font-bold text-[#8f1919] leading-tight">Outros Apps</h3>
-          <p class="text-[#b91c1c] text-base font-medium">Outras funcionalidades</p>
-        </div>
-      </a>
-
-      <a href="/chat.html"
-        class="w-full bg-white p-5 rounded-[1.8rem] shadow-md hover:shadow-lg transition-all duration-300 text-left flex items-center gap-5 border border-white/50 active:scale-[0.98] block">
-        <div class="w-16 h-16 rounded-2xl bg-[#fde2e2] flex items-center justify-center text-[#8f1919] shrink-0">
-          <i id="icon-support" class="fas fa-question-circle text-2xl"></i>
-        </div>
-        <div class="flex flex-col">
-          <h3 class="text-2xl font-bold text-[#8f1919] leading-tight">Suporte do Sistema</h3>
-          <p class="text-[#b91c1c] text-base font-medium">Tire dúvidas sobre o app</p>
-        </div>
-      </a>
-    </div>
-
-    <!-- Footer Branding -->
-    <footer class="mt-auto pt-10 text-center flex flex-col items-center gap-4">
-      <div class="flex flex-col items-center gap-2">
-        <p class="text-[#8f1919] font-bold text-xs uppercase tracking-widest opacity-60">ICM Planalto - Linhares/ES</p>
-
-        <p class="text-[#8f1919] font-bold text-[10px] uppercase tracking-widest opacity-80">
-          DESENVOLVIDO POR <a href="https://wa.me/5527998863709" target="_blank" rel="noopener noreferrer"
-            class="underline decoration-1 underline-offset-2 hover:text-[#b91c1c] transition-colors">JEFTECNOLOGIAS</a>
-        </p>
+        <a href="/gifts.html" class="w-full glass-card-pro p-3 rounded-[1.5rem] flex flex-col items-center text-center justify-between group">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-red-100/90 to-red-200/90 flex items-center justify-center text-[#8f1919] shadow-md mb-1.5 group-hover:scale-110 transition-transform">
+            <i class="fas fa-id-card text-lg"></i>
+          </div>
+          <div class="flex flex-col">
+            <h3 class="text-xs font-extrabold text-[#7f1d1d] leading-tight">Registro de Dons</h3>
+            <p class="text-[#991b1b] text-[10px] font-semibold mt-0.5 opacity-90">Dons espirituais</p>
+          </div>
+        </a>
       </div>
-    </footer>
+
+      <!-- Fileira 2: Dados do Culto e Trombetas & Festas -->
+      <div class="grid grid-cols-2 gap-2.5">
+        <a href="/cult-data.html" class="w-full glass-card-pro p-3 rounded-[1.5rem] flex flex-col items-center text-center justify-between group">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-red-100/90 to-red-200/90 flex items-center justify-center text-[#8f1919] shadow-md mb-1.5 group-hover:scale-110 transition-transform">
+            <i class="fas fa-book-open text-lg"></i>
+          </div>
+          <div class="flex flex-col">
+            <h3 class="text-xs font-extrabold text-[#7f1d1d] leading-tight">Dados do Culto</h3>
+            <p class="text-[#991b1b] text-[10px] font-semibold mt-0.5 opacity-90">Relatórios e presenças</p>
+          </div>
+        </a>
+
+        <a href="/trombetas.html" class="w-full glass-card-pro p-3 rounded-[1.5rem] flex flex-col items-center text-center justify-between group">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-red-100/90 to-red-200/90 flex items-center justify-center text-[#8f1919] shadow-md mb-1.5 group-hover:scale-110 transition-transform p-1.5">
+            <img src="/icone-trombetas.png" alt="Trombetas & Festas" class="w-full h-full object-contain opacity-95" />
+          </div>
+          <div class="flex flex-col">
+            <h3 class="text-xs font-extrabold text-[#7f1d1d] leading-tight">Trombetas & Festas</h3>
+            <p class="text-[#991b1b] text-[10px] font-semibold mt-0.5 opacity-90">Dados e convites</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- Fileira 3: Escalas e Convites -->
+      <div class="grid grid-cols-2 gap-2.5">
+        <a href="/escalas.html" class="w-full glass-card-pro p-3 rounded-[1.5rem] flex flex-col items-center text-center justify-between group">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-red-100/90 to-red-200/90 flex items-center justify-center text-[#8f1919] shadow-md mb-1.5 group-hover:scale-110 transition-transform">
+            <i class="fas fa-calendar-alt text-lg"></i>
+          </div>
+          <div class="flex flex-col">
+            <h3 class="text-xs font-extrabold text-[#7f1d1d] leading-tight">Escalas</h3>
+            <p class="text-[#991b1b] text-[10px] font-semibold mt-0.5 opacity-90">Criação de Escalas</p>
+          </div>
+        </a>
+
+        <a href="/convites.html" class="w-full glass-card-pro p-3 rounded-[1.5rem] flex flex-col items-center text-center justify-between group">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-red-100/90 to-red-200/90 flex items-center justify-center text-[#8f1919] shadow-md mb-1.5 group-hover:scale-110 transition-transform">
+            <i class="fas fa-envelope-open-text text-lg"></i>
+          </div>
+          <div class="flex flex-col">
+            <h3 class="text-xs font-extrabold text-[#7f1d1d] leading-tight">Convites</h3>
+            <p class="text-[#991b1b] text-[10px] font-semibold mt-0.5 opacity-90">Criação de Convites</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- Fileira 4: Oração Ininterrupta e Recurso 9 -->
+      <div class="grid grid-cols-2 gap-2.5">
+        <a href="https://oracao24hicm.web.app" target="_blank" rel="noopener noreferrer"
+          class="w-full glass-card-pro p-3 rounded-[1.5rem] flex flex-col items-center text-center justify-between group">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-red-100/90 to-red-200/90 flex items-center justify-center text-[#8f1919] shadow-md mb-1.5 group-hover:scale-110 transition-transform">
+            <i class="fas fa-clock text-lg"></i>
+          </div>
+          <div class="flex flex-col">
+            <h3 class="text-xs font-extrabold text-[#7f1d1d] leading-tight">Oração Ininterrupta</h3>
+            <p class="text-[#991b1b] text-[10px] font-semibold mt-0.5 opacity-90">Lista de Oração</p>
+          </div>
+        </a>
+
+        <a href="#" class="w-full glass-card-pro p-3 rounded-[1.5rem] flex flex-col items-center text-center justify-between group opacity-75">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-red-100/90 to-red-200/90 flex items-center justify-center text-[#8f1919] shadow-md mb-1.5 group-hover:scale-110 transition-transform">
+            <i class="fas fa-star text-lg"></i>
+          </div>
+          <div class="flex flex-col">
+            <h3 class="text-xs font-extrabold text-[#7f1d1d] leading-tight">Recurso 9</h3>
+            <p class="text-[#991b1b] text-[10px] font-semibold mt-0.5 opacity-90">Em breve</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- Fileira 5: Suporte -->
+      <div class="grid grid-cols-2 gap-2.5">
+        <a href="/chat.html" class="w-full glass-card-pro p-3 rounded-[1.5rem] flex flex-col items-center text-center justify-between group">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-red-100/90 to-red-200/90 flex items-center justify-center text-[#8f1919] shadow-md mb-1.5 group-hover:scale-110 transition-transform">
+            <i class="fas fa-question-circle text-lg"></i>
+          </div>
+          <div class="flex flex-col">
+            <h3 class="text-xs font-extrabold text-[#7f1d1d] leading-tight">Suporte</h3>
+            <p class="text-[#991b1b] text-[10px] font-semibold mt-0.5 opacity-90">Dúvidas sobre o app</p>
+          </div>
+        </a>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- RODAPÉ FIXO TRANSPARENTE E LIMPO -->
+  <footer class="fixed bottom-0 left-0 w-full h-12 bg-gradient-to-t from-[#1a0505]/90 via-[#1a0505]/40 to-transparent z-30 pointer-events-none"></footer>
+
+  <!-- Container Oculto para PWA -->
+  <div id="pwa-install-container" class="hidden absolute top-5 right-5">
+    <button id="btn-install-pwa"></button>
   </div>
+
+  <!-- Script de Controle PWA -->
+  <script>
+    let deferredPrompt = null;
+    const installContainer = document.getElementById('pwa-install-container');
+    const btnInstallPwa = document.getElementById('btn-install-pwa');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      if (installContainer) {
+        installContainer.classList.remove('hidden');
+      }
+    });
+
+    if (btnInstallPwa) {
+      btnInstallPwa.addEventListener('click', async () => {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          console.log('App instalado com sucesso!');
+        }
+        deferredPrompt = null;
+        if (installContainer) {
+          installContainer.classList.add('hidden');
+        }
+      });
+    }
+
+    window.addEventListener('appinstalled', () => {
+      if (installContainer) {
+        installContainer.classList.add('hidden');
+      }
+    });
+  </script>
 
   <script type="module" src="/index.ts"></script>
 </body>

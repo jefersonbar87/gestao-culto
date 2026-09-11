@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR" translate="no">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Dados do Culto - ICM</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #fff5f5;
+      color: #1e293b;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="min-h-screen bg-[#fff5f5] flex flex-col items-center pt-8 pb-12 px-6">
+    <!-- Header -->
+    <header class="w-full max-w-md flex items-center gap-4 mb-8">
+      <a href="/home.html"
+        class="text-[#8f1919] p-2 bg-white rounded-full shadow-sm flex items-center justify-center w-10 h-10 active:scale-95 transition-transform">
+        <i class="fas fa-arrow-left"></i>
+      </a>
+      <h1 class="text-2xl font-black text-[#8f1919] uppercase tracking-tight">Dados do Culto</h1>
+    </header>
+
+    <!-- Lista de Opções -->
+    <div class="max-w-md w-full space-y-4">
+      
+      <!-- Dados Gerais do Culto -->
+      <a href="/service-data.html"
+        class="w-full glass-card p-5 rounded-[1.8rem] shadow-md hover:shadow-lg transition-all duration-300 text-left flex items-center gap-5 border border-white/80 active:scale-[0.98] block">
+        <div class="w-16 h-16 rounded-2xl bg-red-100 flex items-center justify-center text-[#8f1919] shrink-0 shadow-inner">
+          <i class="fas fa-file-alt text-2xl"></i>
+        </div>
+        <div class="flex flex-col">
+          <h3 class="text-xl font-bold text-[#8f1919] leading-tight">Dados Gerais do Culto</h3>
+          <p class="text-red-400 text-sm font-medium mt-0.5">Relatórios e informações gerais</p>
+        </div>
+      </a>
+
+      <!-- Lista de Presença -->
+      <a href="/service-attendance.html"
+        class="w-full glass-card p-5 rounded-[1.8rem] shadow-md hover:shadow-lg transition-all duration-300 text-left flex items-center gap-5 border border-white/80 active:scale-[0.98] block">
+        <div class="w-16 h-16 rounded-2xl bg-red-100 flex items-center justify-center text-[#8f1919] shrink-0 shadow-inner">
+          <i class="fas fa-users text-2xl"></i>
+        </div>
+        <div class="flex flex-col">
+          <h3 class="text-xl font-bold text-[#8f1919] leading-tight">Lista de Presença</h3>
+          <p class="text-red-400 text-sm font-medium mt-0.5">Controle de presenças e chamada</p>
+        </div>
+      </a>
+
+    </div>
+
+    <!-- Botão Voltar ao Início -->
+    <div class="max-w-md w-full mt-8">
+      <a href="/home.html"
+        class="w-full bg-white text-[#8f1919] font-bold py-3.5 rounded-2xl border border-red-200 block text-center shadow-sm active:scale-[0.98] transition-transform">
+        Voltar ao Início
+      </a>
+    </div>
+  </div>
+</body>
+
+</html>

@@ -1,4 +1,4 @@
-import { COLETANEA_DATA, CIAS_DATA } from './utils/hymnData';
+import { COLETANEA_DATA, CIAS_DATA, AVULSOS_DATA } from './utils/hymnData';
 import { getSettings } from './utils/settingsHelper';
 
 interface HymnRow {
@@ -13,6 +13,7 @@ const pageTitle = document.getElementById('page-title') as HTMLHeadingElement;
 const btnToggleMode = document.getElementById('btn-toggle-mode') as HTMLButtonElement;
 const radioColetanea = document.getElementById('radio-coletanea') as HTMLInputElement;
 const radioCias = document.getElementById('radio-cias') as HTMLInputElement;
+const radioAvulso = document.getElementById('radio-avulso') as HTMLInputElement; // <-- ADICIONADO AVULSO
 const searchQuery = document.getElementById('search-query') as HTMLInputElement;
 const btnVoiceSearch = document.getElementById('btn-voice-search') as HTMLButtonElement;
 const searchResults = document.getElementById('search-results') as HTMLDivElement;
@@ -28,47 +29,7 @@ const btnDownloadImage = document.getElementById('btn-download-image') as HTMLBu
 let isAfterWordMode = false;
 let activeRowIndex = 0;
 let rows: HymnRow[] = Array(8).fill(null).map(() => ({ number: '', name: '' }));
-let isListening = false;
-let recognition: any = null;
 let generatedImageUrl: string | null = null;
-
-// Speech Recognition Boot
-const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-if (SpeechRecognition) {
-  recognition = new SpeechRecognition();
-  recognition.continuous = true;
-  recognition.interimResults = true;
-  recognition.lang = 'pt-BR';
-
-  recognition.onstart = () => {
-    isListening = true;
-    if (btnVoiceSearch) {
-      btnVoiceSearch.className = "absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center bg-red-600 text-white animate-pulse";
-    }
-  };
-
-  recognition.onend = () => {
-    isListening = false;
-    if (btnVoiceSearch) {
-      btnVoiceSearch.className = "absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center text-gray-400";
-    }
-  };
-
-  recognition.onresult = (event: any) => {
-    let finalTranscript = '';
-    for (let i = event.resultIndex; i < event.results.length; ++i) {
-      if (event.results[i].isFinal) {
-        finalTranscript += event.results[i][0].transcript;
-      }
-    }
-    if (finalTranscript) {
-      const cleanText = finalTranscript.replace(/[.]/g, '').toUpperCase();
-      const currentVal = searchQuery.value;
-      searchQuery.value = currentVal && !currentVal.endsWith(' ') ? currentVal + ' ' + cleanText : currentVal + cleanText;
-      triggerSearch();
-    }
-  };
-}
 
 function updateRowStyles() {
   if (!tableContainer) return;
@@ -163,14 +124,20 @@ function hidePreview() {
 
 function triggerSearch() {
   const query = searchQuery.value.trim().toLowerCase();
+  
   if (!query) {
     searchResults.innerHTML = '';
     searchResults.classList.add('hidden');
     return;
   }
 
-  const isCias = radioCias ? radioCias.checked : false;
-  const db = isCias ? CIAS_DATA : COLETANEA_DATA;
+  // Define dinamicamente o banco de dados baseado na seleção
+  let db = COLETANEA_DATA;
+  if (radioCias && radioCias.checked) {
+    db = CIAS_DATA;
+  } else if (radioAvulso && radioAvulso.checked) {
+    db = AVULSOS_DATA;
+  }
 
   const filtered = db.filter(h => h.number.includes(query) || h.name.toLowerCase().includes(query)).slice(0, 50);
 
@@ -202,33 +169,38 @@ function selectHymn(hymn: { number: string; name: string }) {
   hidePreview();
 }
 
-// Voice search toggle
-if (btnVoiceSearch) {
-  btnVoiceSearch.addEventListener('click', () => {
-    if (!recognition) {
-      alert("Seu navegador não suporta reconhecimento de voz.");
-      return;
-    }
-    if (isListening) {
-      recognition.stop();
-    } else {
-      searchQuery.value = '';
-      recognition.start();
-    }
-  });
+// Inserir hino avulso
+function adicionarAvulsoManual() {
+  const nomeAvulso = searchQuery.value.trim().toUpperCase();
+  if (!nomeAvulso) return;
+  selectHymn({ number: '-', name: nomeAvulso });
 }
 
 // On Search inputs
 if (searchQuery) {
   searchQuery.addEventListener('input', triggerSearch);
+  
+  searchQuery.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && radioAvulso && radioAvulso.checked) {
+      e.preventDefault();
+      adicionarAvulsoManual();
+    }
+  });
 }
 
 // Toggle radios
-[radioColetanea, radioCias].forEach(radio => {
+[radioColetanea, radioCias, radioAvulso].forEach(radio => {
   if (radio) {
     radio.addEventListener('change', () => {
+      searchQuery.value = '';
       triggerSearch();
       hidePreview();
+      
+      if (radioAvulso && radioAvulso.checked) {
+        searchQuery.placeholder = "BUSCAR LOUVOR AVULSO...";
+      } else {
+        searchQuery.placeholder = "BUSCAR LOUVOR...";
+      }
     });
   }
 });
@@ -266,6 +238,7 @@ if (btnToggleMode) {
 
 // Image Generator
 async function generateImage() {
+  if (!btnGenerateImage) return;
   btnGenerateImage.disabled = true;
   btnGenerateImage.innerHTML = '<i class="fas fa-spinner animate-spin"></i> GERANDO...';
 
@@ -345,7 +318,7 @@ async function generateImage() {
   ctx.fillText('Nº', colDividerX / 2, startY + (tableHeaderHeight / 2));
   ctx.fillText('Nome do Hino', colDividerX + (tableWidth - colDividerX) / 2, startY + (tableHeaderHeight / 2));
 
-  // 4. Data Rows (Ajustado com inteligência de quebra de linha)
+  // 4. Data Rows
   rows.forEach((row, i) => {
     const y = startY + tableHeaderHeight + (i * rowHeight);
     ctx.strokeRect(0, y, tableWidth, rowHeight);
@@ -358,24 +331,19 @@ async function generateImage() {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
-    // Número do Hino (Mantém 30px)
     ctx.font = '30px Arial';
     if (row.number) ctx.fillText(row.number, colDividerX / 2, y + (rowHeight / 2));
 
-    // Nome do Hino (Lógica Dinâmica de Enquadramento)
     ctx.textAlign = 'left';
     if (row.name) {
-      const maxTextWidth = tableWidth - colDividerX - 40; // Área limite segura
+      const maxTextWidth = tableWidth - colDividerX - 40;
 
-      // Mede primeiro com a fonte padrão
       ctx.font = '30px Arial';
       const originalWidth = ctx.measureText(row.name).width;
 
       if (originalWidth <= maxTextWidth) {
-        // Cabe perfeitamente na linha
         ctx.fillText(row.name, colDividerX + 30, y + (rowHeight / 2));
       } else {
-        // É muito longo: reduz para 24px e quebra a linha
         ctx.font = '24px Arial';
         const words = row.name.split(' ');
         let lines = [];
@@ -392,8 +360,7 @@ async function generateImage() {
         }
         lines.push(currentLine.trim());
 
-        // Distribui as linhas perfeitamente no centro da célula
-        const lineHeight = 30; // Altura entre as linhas geradas
+        const lineHeight = 30;
         const totalTextHeight = (lines.length - 1) * lineHeight;
         const startTextY = y + (rowHeight / 2) - (totalTextHeight / 2);
 
@@ -444,7 +411,6 @@ if (btnShareWhatsapp) {
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
         await navigator.share({ files: [file], title: 'Lista de Louvores ICM' });
       } else {
-        // Fallback for custom link or copying
         alert("O compartilhamento direto de arquivos não é suportado pelo seu navegador/dispositivo. Baixe a imagem e envie manualmente.");
       }
     } catch (e) {
@@ -456,4 +422,93 @@ if (btnShareWhatsapp) {
 
 // Start
 renderTable();
-export { };
+
+// =========================================================================
+// MÁQUINA DE RECONHECIMENTO DE VOZ ANTIBUG (HINOS)
+// =========================================================================
+function criarReconhecimentoVozHinos(onTextoCapturado: (texto: string) => void, btnElement: HTMLButtonElement) {
+  const SpeechRecognitionAPI = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+  
+  if (!SpeechRecognitionAPI) {
+    alert("Seu navegador não suporta reconhecimento de voz.");
+    return null;
+  }
+
+  const recognition = new SpeechRecognitionAPI();
+  recognition.continuous = false; // Trava o loop: só pega a frase finalizada
+  recognition.interimResults = false; // Ignora o lixo do navegador em tempo real
+  recognition.lang = 'pt-BR';
+  recognition.maxAlternatives = 1;
+
+  let localIsListening = false;
+
+  recognition.onstart = () => {
+    localIsListening = true;
+    if (btnElement) {
+      btnElement.className = "absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center bg-red-600 text-white animate-pulse shadow-md transition-all";
+    }
+  };
+
+  recognition.onend = () => {
+    localIsListening = false;
+    if (btnElement) {
+      btnElement.className = "absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors";
+    }
+  };
+
+  recognition.onerror = (event: any) => {
+    console.warn("Aviso de voz:", event.error);
+    localIsListening = false;
+    if (btnElement) {
+      btnElement.className = "absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors";
+    }
+  };
+
+  recognition.onresult = (event: any) => {
+    const transcript = event.results[0]?.[0]?.transcript;
+    if (transcript) {
+      // Limpeza pesada: tira pontos e vírgulas que o navegador tenta colocar em números de hinos
+      const textoLimpo = transcript.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g, "").trim();
+      onTextoCapturado(textoLimpo);
+    }
+  };
+
+  return {
+    toggle: () => {
+      if (localIsListening) {
+        recognition.stop();
+      } else {
+        try {
+          recognition.start();
+        } catch (e) {
+          recognition.abort();
+          recognition.start();
+        }
+      }
+    },
+    isListening: () => localIsListening
+  };
+}
+
+if (searchQuery && btnVoiceSearch) {
+  const vozHinos = criarReconhecimentoVozHinos((textoFinal) => {
+    const valorAtual = searchQuery.value;
+    searchQuery.value = valorAtual && !valorAtual.endsWith(' ') ? `${valorAtual} ${textoFinal}` : `${valorAtual}${textoFinal}`;
+    
+    // Dispara o evento de input sozinho para a lista filtrar na mesma hora
+    const inputEvent = new Event('input', { bubbles: true });
+    searchQuery.dispatchEvent(inputEvent);
+  }, btnVoiceSearch);
+
+  if (vozHinos) {
+    const novoBtnVoiceSearch = btnVoiceSearch.cloneNode(true) as HTMLButtonElement;
+    btnVoiceSearch.parentNode?.replaceChild(novoBtnVoiceSearch, btnVoiceSearch);
+    
+    novoBtnVoiceSearch.addEventListener('click', (e) => {
+      e.preventDefault();
+      vozHinos.toggle();
+    });
+  }
+}
+
+export {};

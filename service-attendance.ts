@@ -2,7 +2,7 @@ import { getSettings } from './utils/settingsHelper';
 
 const settings = getSettings();
 let generatedImageUrl: string | null = null;
-let serviceType: 'EBD' | 'CULTO À NOITE' | null = null;
+let serviceType: 'EBD' | 'CULTO À NOITE' | 'MADRUGADA' | 'CULTO AO MEIO-DIA' | null = null;
 
 interface Person {
   id: string;
@@ -12,13 +12,16 @@ interface Person {
 }
 
 let peopleList: Person[] = [];
-const ROLES = ['PASTOR', 'UNGIDO', 'DIÁCONO', 'OBREIRO', 'G.LOUVOR','INSTRUMENTISTA', 'G.INTERCESSÃO', 'PROFESSOR (A)', 'QUINZENAIS'];
+const ROLES = ['PASTOR', 'UNGIDO', 'DIÁCONO', 'OBREIRO', 'G.LOUVOR', 'INSTRUMENTISTA', 'G.INTERCESSÃO', 'PROFESSOR (A)', 'QUINZENAIS', 'CRIANÇA', 'ADOLESCENTE', 'JOVEM', 'MEMBRO'];
 
 // DOM elements
 const inputDate = document.getElementById('input-date') as HTMLInputElement;
 const dateDisplay = document.getElementById('date-display') as HTMLDivElement;
 const btnTypeEBD = document.getElementById('btn-type-ebd') as HTMLButtonElement;
 const btnTypeNight = document.getElementById('btn-type-night') as HTMLButtonElement;
+const btnTypeDawn = document.getElementById('btn-type-dawn') as HTMLButtonElement;
+const btnTypeNoon = document.getElementById('btn-type-noon') as HTMLButtonElement;
+
 const btnAddPerson = document.getElementById('btn-add-person') as HTMLButtonElement;
 const peopleListContainer = document.getElementById('people-list') as HTMLDivElement;
 
@@ -39,19 +42,27 @@ function updateDateDisplay() {
   saveData();
 }
 
-function setServiceType(type: 'EBD' | 'CULTO À NOITE') {
+function setServiceType(type: 'EBD' | 'CULTO À NOITE' | 'MADRUGADA' | 'CULTO AO MEIO-DIA') {
   serviceType = type;
-  if (type === 'EBD') {
-    btnTypeEBD.classList.add('bg-[#8f1919]', 'text-white');
-    btnTypeEBD.classList.remove('text-[#8f1919]');
-    btnTypeNight.classList.remove('bg-[#8f1919]', 'text-white');
-    btnTypeNight.classList.add('text-[#8f1919]');
-  } else {
-    btnTypeNight.classList.add('bg-[#8f1919]', 'text-white');
-    btnTypeNight.classList.remove('text-[#8f1919]');
-    btnTypeEBD.classList.remove('bg-[#8f1919]', 'text-white');
-    btnTypeEBD.classList.add('text-[#8f1919]');
-  }
+  
+  const buttons = [
+    { btn: btnTypeEBD, name: 'EBD' },
+    { btn: btnTypeNight, name: 'CULTO À NOITE' },
+    { btn: btnTypeDawn, name: 'MADRUGADA' },
+    { btn: btnTypeNoon, name: 'CULTO AO MEIO-DIA' }
+  ];
+
+  buttons.forEach(item => {
+    if (!item.btn) return;
+    if (item.name === type) {
+      item.btn.classList.add('bg-[#8f1919]', 'text-white');
+      item.btn.classList.remove('text-[#8f1919]');
+    } else {
+      item.btn.classList.remove('bg-[#8f1919]', 'text-white');
+      item.btn.classList.add('text-[#8f1919]');
+    }
+  });
+
   saveData();
 }
 
@@ -127,36 +138,100 @@ function renderList() {
     checkDiv.appendChild(checkbox);
     checkDiv.appendChild(nameInput);
 
-    // Select Role & Delete
+    // Select Role customizado com Modal
     const actionDiv = document.createElement('div');
     actionDiv.className = 'flex items-center gap-2 w-full sm:w-auto mt-2 sm:mt-0';
 
-    const roleSelect = document.createElement('select');
-    roleSelect.className = 'bg-white border border-slate-300 rounded-lg text-xs font-bold text-slate-600 outline-none p-2 w-full sm:w-36';
-    ROLES.forEach(r => {
-      const opt = document.createElement('option');
-      opt.value = r;
-      opt.innerText = r;
-      if (person.role === r) opt.selected = true;
-      roleSelect.appendChild(opt);
-    });
-    roleSelect.onchange = (e) => {
-      person.role = (e.target as HTMLSelectElement).value;
-      saveData();
+    const roleButton = document.createElement('button');
+    roleButton.className = 'bg-white border border-slate-300 rounded-lg text-xs font-bold text-slate-700 outline-none p-2 w-full sm:w-36 flex items-center justify-between shadow-sm active:scale-95 transition-all';
+    roleButton.innerHTML = `<span>${person.role}</span> <i class="fas fa-chevron-down text-[10px] text-slate-400"></i>`;
+    
+    roleButton.onclick = () => {
+      const modalBg = document.createElement('div');
+      modalBg.className = 'fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4';
+      
+      let optionsHtml = '';
+      ROLES.forEach(r => {
+        const isSelected = person.role === r;
+        optionsHtml += `
+          <button type="button" data-role="${r}" class="w-full text-left px-4 py-3 rounded-xl text-xs font-bold uppercase transition-colors flex items-center justify-between ${isSelected ? 'bg-red-50 text-[#8f1919] border border-red-200' : 'bg-slate-50 text-slate-700 hover:bg-slate-100 border border-slate-200'}">
+            ${r}
+            ${isSelected ? '<i class="fas fa-check text-[#8f1919]"></i>' : ''}
+          </button>
+        `;
+      });
+
+      modalBg.innerHTML = `
+        <div class="bg-white rounded-2xl p-5 max-w-xs w-full shadow-2xl border border-red-100 flex flex-col max-h-[80vh]">
+          <div class="flex justify-between items-center mb-3 pb-2 border-b border-slate-100">
+            <h3 class="text-sm font-extrabold text-[#7f1d1d] uppercase">Selecionar Função</h3>
+            <button id="modal-role-close" class="text-slate-400 hover:text-slate-600 p-1"><i class="fas fa-times"></i></button>
+          </div>
+          <div class="overflow-y-auto space-y-2 pr-1 flex-1">
+            ${optionsHtml}
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(modalBg);
+
+      modalBg.querySelectorAll('[data-role]').forEach(btn => {
+        btn.addEventListener('click', (ev) => {
+          const selectedRole = (ev.currentTarget as HTMLElement).getAttribute('data-role');
+          if (selectedRole) {
+            person.role = selectedRole;
+            saveData();
+            renderList();
+          }
+          modalBg.remove();
+        });
+      });
+
+      document.getElementById('modal-role-close')?.addEventListener('click', () => {
+        modalBg.remove();
+      });
+      
+      modalBg.addEventListener('click', (ev) => {
+        if (ev.target === modalBg) modalBg.remove();
+      });
     };
 
     const btnDel = document.createElement('button');
     btnDel.innerHTML = '<i class="fas fa-trash-alt"></i>';
     btnDel.className = 'w-9 h-9 rounded-lg bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-colors flex items-center justify-center shrink-0';
     btnDel.onclick = () => {
-      if(confirm('Remover este irmão da lista?')) {
+      const modalBg = document.createElement('div');
+      modalBg.className = 'fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4';
+      
+      modalBg.innerHTML = `
+        <div class="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl border border-red-100 flex flex-col items-center text-center">
+          <div class="w-12 h-12 rounded-full bg-red-100 text-[#8f1919] flex items-center justify-center text-xl mb-3">
+            <i class="fas fa-exclamation-triangle"></i>
+          </div>
+          <h3 class="text-base font-extrabold text-[#7f1d1d] mb-1">Remover Irmão</h3>
+          <p class="text-xs text-slate-600 mb-5">Deseja realmente remover este irmão da lista de presença?</p>
+          <div class="flex gap-3 w-full">
+            <button id="modal-cancel" class="flex-1 py-2.5 rounded-xl border border-slate-300 text-slate-700 font-bold text-xs hover:bg-slate-100 transition-colors">Cancelar</button>
+            <button id="modal-confirm" class="flex-1 py-2.5 rounded-xl bg-[#8f1919] text-white font-bold text-xs shadow-md hover:bg-red-800 transition-colors">Remover</button>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(modalBg);
+
+      document.getElementById('modal-cancel')?.addEventListener('click', () => {
+        modalBg.remove();
+      });
+
+      document.getElementById('modal-confirm')?.addEventListener('click', () => {
         peopleList = peopleList.filter(p => p.id !== person.id);
         saveData();
         renderList();
-      }
+        modalBg.remove();
+      });
     };
 
-    actionDiv.appendChild(roleSelect);
+    actionDiv.appendChild(roleButton);
     actionDiv.appendChild(btnDel);
 
     row.appendChild(checkDiv);
@@ -185,6 +260,8 @@ function hidePreview() {
 if (inputDate) inputDate.addEventListener('change', updateDateDisplay);
 if (btnTypeEBD) btnTypeEBD.addEventListener('click', () => setServiceType('EBD'));
 if (btnTypeNight) btnTypeNight.addEventListener('click', () => setServiceType('CULTO À NOITE'));
+if (btnTypeDawn) btnTypeDawn.addEventListener('click', () => setServiceType('MADRUGADA'));
+if (btnTypeNoon) btnTypeNoon.addEventListener('click', () => setServiceType('CULTO AO MEIO-DIA'));
 if (btnAddPerson) btnAddPerson.addEventListener('click', addPerson);
 
 // Helpers para Desenho

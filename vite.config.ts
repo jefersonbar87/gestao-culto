@@ -34,7 +34,8 @@ export default defineConfig(({ mode }) => {
             'trombetas-invitation': path.resolve(__dirname, 'trombetas-invitation.html'), // Adicionado com sucesso!
             gifts: path.resolve(__dirname, 'gifts.html'),
             trombetas: path.resolve(__dirname, 'trombetas.html'),
-            chat: path.resolve(__dirname, 'chat.html')
+            chat: path.resolve(__dirname, 'chat.html'),
+            'cult-data': path.resolve(__dirname, 'cult-data.html') // <-- Nossa nova página registrada com sucesso!
           }
         }
       }

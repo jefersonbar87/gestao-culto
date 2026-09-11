@@ -10,15 +10,15 @@
     <style>
         body {
             margin: 0;
-            /* O fundo base agora é da mesma cor da sua tela home */
             background-color: #fce8e8;
             overflow: hidden;
+            font-family: 'Inter', sans-serif;
         }
 
         .splash-logo-anim {
             opacity: 0;
-            transform: scale(0.95);
-            animation: logoReveal 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+            transform: scale(0.4);
+            animation: logoReveal 2.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
         }
 
         @keyframes logoReveal {
@@ -28,7 +28,6 @@
             }
         }
 
-        /* Classe para a transição de saída ficar suave */
         .fade-out {
             opacity: 0;
             transition: opacity 0.5s ease-in-out;
@@ -42,15 +41,36 @@
 
     <!-- Imagem da Logomarca -->
     <img id="splash-logo" src="./logo-gestao.png" alt="Logomarca Gestão"
-        class="relative z-10 w-64 md:w-80 object-contain splash-logo-anim transition-opacity duration-500" />
+        class="relative z-10 w-64 md:w-80 object-contain splash-logo-anim transition-opacity duration-500 -mt-10" />
+
+    <!-- Rodapé Fixo Proporcional Correto -->
+    <footer id="splash-footer" class="absolute bottom-5 left-0 w-full z-20 flex flex-col items-center justify-center fade-out" style="opacity: 1; transition: opacity 0.5s ease-in-out;">
+        <div class="flex flex-col items-center select-none gap-0.5">
+            <!-- Desenvolvido por discreto -->
+            <span class="text-[10px] font-medium text-white/70 tracking-wider mb-0.5">
+                Desenvolvido por:
+            </span>
+            <!-- Nome da Marca em Destaque -->
+            <div class="text-base md:text-lg font-black tracking-tight flex items-center drop-shadow-sm">
+                <span class="text-slate-900 font-extrabold">Jef</span><span class="text-[#00b4d8] font-black">Tecnologias</span>
+            </div>
+            <!-- Linha Gradiente -->
+            <div class="w-28 h-[1.5px] bg-gradient-to-r from-transparent via-[#00b4d8] to-transparent my-0.5 opacity-80"></div>
+            <!-- Subtítulo Bem Delicado e Menor -->
+            <span class="text-[6px] md:text-[9px] font-bold text-slate-400 tracking-[0.2em] uppercase">
+                SOLUÇÕES INTELIGENTES
+            </span>
+        </div>
+    </footer>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             // Aguarda o tempo de exibição do splash
             setTimeout(() => {
-                // Esmaece apenas a camada vermelha e a logo, revelando o fundo #fce8e8
+                // Esmaece a camada vermelha, a logo e o rodapé juntos
                 document.getElementById('splash-red-bg').classList.add('fade-out');
                 document.getElementById('splash-logo').classList.add('fade-out');
+                document.getElementById('splash-footer').classList.add('fade-out');
 
                 // Assim que o esmaecimento termina (0.5s), pula para a home
                 setTimeout(() => {

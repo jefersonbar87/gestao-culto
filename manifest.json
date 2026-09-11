@@ -1,7 +1,6 @@
-
 {
   "name": "Gestão Culto Profético ICM",
-  "short_name": "Culto ICM",
+  "short_name": "Gestão ICM",
   "description": "Sistema de gestão para o Culto Profético da Igreja Cristã Maranata",
   "start_url": "/",
   "display": "standalone",
@@ -10,15 +9,16 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "https://raw.githubusercontent.com/google/material-design-icons/master/png/action/settings/android/res/mipmap-hdpi/ic_launcher_settings_f9_24dp.png",
+      "src": "/icon-pwa.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "https://raw.githubusercontent.com/google/material-design-icons/master/png/action/settings/android/res/mipmap-xxxhdpi/ic_launcher_settings_f9_24dp.png",
+      "src": "/icon-pwa.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }

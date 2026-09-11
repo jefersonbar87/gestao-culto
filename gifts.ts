@@ -17,24 +17,14 @@ const THEMES: Record<GiftCategory, ThemeConfig> = {
 };
 
 const settings = getSettings();
-let selectedCategory: GiftCategory = 'SONHO';
 let generatedImageUrl: string | null = null;
 
-// DOM elements
-const btnSonho = document.getElementById('cat-sonho') as HTMLButtonElement;
-const btnVisao = document.getElementById('cat-visao') as HTMLButtonElement;
-const btnRevelacao = document.getElementById('cat-revelacao') as HTMLButtonElement;
-const btnOutros = document.getElementById('cat-outros') as HTMLButtonElement;
-
-const customCategoryContainer = document.getElementById('custom-category-container') as HTMLDivElement;
-const inputCustomCategory = document.getElementById('gift-custom-category') as HTMLInputElement;
-
+// DOM elements globais da tela
 const inputChurch = document.getElementById('gift-church') as HTMLInputElement;
 const checkIncludeDate = document.getElementById('gift-include-date') as HTMLInputElement;
 const inputDate = document.getElementById('gift-date') as HTMLInputElement;
 const checkJustify = document.getElementById('gift-justify-text') as HTMLInputElement;
 const checkVertical = document.getElementById('gift-vertical-image') as HTMLInputElement;
-const inputContent = document.getElementById('gift-content') as HTMLTextAreaElement;
 
 const btnFontPlus = document.getElementById('btn-font-plus') as HTMLButtonElement;
 const btnFontMinus = document.getElementById('btn-font-minus') as HTMLButtonElement;
@@ -46,40 +36,12 @@ const previewSection = document.getElementById('gift-preview-section') as HTMLDi
 const previewImage = document.getElementById('gift-preview-image') as HTMLImageElement;
 const btnShareGift = document.getElementById('btn-share-gift') as HTMLButtonElement;
 const btnDownloadGift = document.getElementById('btn-download-gift') as HTMLButtonElement;
+const fieldsContainer = document.getElementById('gift-fields-container') as HTMLDivElement;
+const btnAddGiftField = document.getElementById('btn-add-gift-field') as HTMLButtonElement;
 
 const today = new Date();
 if (inputDate) {
   inputDate.value = today.toISOString().split('T')[0];
-}
-
-const categories = [
-  { btn: btnSonho, key: 'SONHO' as const },
-  { btn: btnVisao, key: 'VISÃO' as const },
-  { btn: btnRevelacao, key: 'REVELAÇÃO' as const },
-  { btn: btnOutros, key: 'OUTROS' as const }
-];
-
-function selectCategory(cat: GiftCategory) {
-  selectedCategory = cat;
-  hidePreview();
-
-  if (customCategoryContainer) {
-    if (cat === 'OUTROS') {
-      customCategoryContainer.classList.remove('hidden');
-    } else {
-      customCategoryContainer.classList.add('hidden');
-    }
-  }
-
-  categories.forEach(({ btn, key }) => {
-    if (!btn) return;
-    const theme = THEMES[key];
-    if (key === cat) {
-      btn.className = `py-3 px-4 rounded-xl font-bold text-xs border uppercase text-center transition-all ${theme.bgLight} ${theme.text} ${theme.border} ring-2 ring-offset-1 ring-${key === 'SONHO' ? 'red' : key === 'REVELAÇÃO' ? 'blue' : key === 'VISÃO' ? 'emerald' : 'gray'}-500`;
-    } else {
-      btn.className = `py-3 px-4 rounded-xl font-bold text-xs border uppercase text-center transition-all bg-slate-50 text-slate-500 border-slate-200`;
-    }
-  });
 }
 
 function hidePreview() {
@@ -105,13 +67,16 @@ if (btnFontPlus && btnFontMinus && inputFontSize && fontSizeDisplay) {
   });
 }
 
-categories.forEach(({ btn, key }) => {
-  if (btn) btn.addEventListener('click', () => selectCategory(key));
-});
-
-[inputChurch, checkIncludeDate, inputDate, checkJustify, checkVertical, inputContent, inputCustomCategory].forEach(input => {
+[inputChurch, checkIncludeDate, inputDate, checkJustify, checkVertical].forEach(input => {
   if (input) input.addEventListener('input', hidePreview);
 });
+
+if (fieldsContainer) {
+    fieldsContainer.addEventListener('input', (e) => {
+        if ((e.target as HTMLElement).classList.contains('gift-textarea')) hidePreview();
+    });
+}
+
 
 function wrapText(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, maxWidth: number, lineHeight: number, justify: boolean, draw: boolean = true): number {
   const paragraphs = text.split('\n');
@@ -161,9 +126,129 @@ function wrapText(ctx: CanvasRenderingContext2D, text: string, x: number, y: num
   return currentY;
 }
 
-// Canvas image generator
+// =========================================================================
+// MÁQUINA DE RECONHECIMENTO DE VOZ CONTÍNUO (ESTILO WHATSAPP)
+// =========================================================================
+function criarReconhecimentoVozDons(onTextoCapturado: (texto: string) => void, btnElement: HTMLButtonElement) {
+  const SpeechRecognitionAPI = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+  
+  if (!SpeechRecognitionAPI) {
+    alert("Seu navegador não suporta reconhecimento de voz.");
+    return null;
+  }
+
+  const recognition = new SpeechRecognitionAPI();
+  recognition.continuous = true;
+  recognition.interimResults = true;
+  recognition.lang = 'pt-BR';
+  recognition.maxAlternatives = 1;
+
+  let localIsListening = false;
+  let manualStop = false;
+
+  recognition.onstart = () => {
+    localIsListening = true;
+    manualStop = false;
+    if (btnElement) {
+      btnElement.className = "btn-voice-don absolute right-3 top-3 w-8 h-8 rounded-full flex items-center justify-center bg-red-600 text-white animate-pulse shadow-lg ring-4 ring-red-200 transition-all z-10";
+      btnElement.title = "Ouvindo... Clique para parar";
+    }
+  };
+
+  recognition.onend = () => {
+    if (localIsListening && !manualStop) {
+      try {
+        recognition.start();
+        return;
+      } catch (e) {}
+    }
+    
+    localIsListening = false;
+    if (btnElement) {
+      btnElement.className = "btn-voice-don absolute right-3 top-3 w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors z-10";
+      btnElement.title = "Ditar dom por voz";
+    }
+  };
+
+  recognition.onerror = (event: any) => {
+    console.warn("Aviso de voz:", event.error);
+    if (event.error === 'not-allowed') {
+      alert("Permissão de microfone negada. Verifique as configurações do navegador.");
+      localIsListening = false;
+    }
+  };
+
+  recognition.onresult = (event: any) => {
+    let finalTranscript = '';
+    for (let i = event.resultIndex; i < event.results.length; ++i) {
+      if (event.results[i].isFinal) {
+        finalTranscript += event.results[i][0].transcript;
+      }
+    }
+    if (finalTranscript.trim()) onTextoCapturado(finalTranscript.trim());
+  };
+
+  return {
+    toggle: () => {
+      if (localIsListening) {
+        manualStop = true;
+        localIsListening = false;
+        recognition.stop();
+      } else {
+        manualStop = false;
+        try {
+          recognition.start();
+        } catch (e) {
+          recognition.abort();
+          recognition.start();
+        }
+      }
+    },
+    isListening: () => localIsListening
+  };
+}
+
+// Configura o ouvinte de microfone para um bloco específico
+function bindVoiceButton(block: HTMLElement) {
+    const btnVoice = block.querySelector('.btn-voice-don') as HTMLButtonElement;
+    const textArea = block.querySelector('.gift-textarea') as HTMLTextAreaElement;
+    
+    if (btnVoice && textArea && !(btnVoice as any)._voiceInitialized) {
+        (btnVoice as any)._voiceInitialized = true;
+        const vozDons = criarReconhecimentoVozDons((textoFinal) => {
+            const valorAtual = textArea.value;
+            textArea.value = valorAtual ? `${valorAtual} ${textoFinal}` : textoFinal;
+            hidePreview(); 
+        }, btnVoice);
+
+        if (vozDons) {
+            btnVoice.addEventListener('click', (e) => {
+                e.preventDefault();
+                vozDons.toggle();
+            });
+        }
+    }
+}
+
+// Vincula voz aos blocos já existentes ao carregar
+if (fieldsContainer) {
+    fieldsContainer.querySelectorAll('.gift-item-block').forEach(block => bindVoiceButton(block as HTMLElement));
+}
+
+// Vincula voz aos novos blocos quando forem adicionados via HTML Script
+if (btnAddGiftField) {
+    btnAddGiftField.addEventListener('click', () => {
+        setTimeout(() => {
+            if (fieldsContainer && fieldsContainer.lastElementChild) {
+                bindVoiceButton(fieldsContainer.lastElementChild as HTMLElement);
+            }
+        }, 50);
+    });
+}
+
+// Canvas image generator com suporte a múltiplos blocos
 async function generateGiftPoster() {
-  if (!btnGenerateGift) return;
+  if (!btnGenerateGift || !fieldsContainer) return;
   
   btnGenerateGift.disabled = true;
   const originalText = btnGenerateGift.innerHTML;
@@ -171,7 +256,6 @@ async function generateGiftPoster() {
 
   try {
     const churchName = inputChurch?.value.trim().toUpperCase() || '';
-    const content = inputContent?.value.trim() || 'NENHUM CONTEÚDO INFORMADO';
     const isVertical = checkVertical?.checked || false;
     const isJustified = checkJustify?.checked || false;
     const includeDate = checkIncludeDate?.checked || false;
@@ -180,7 +264,6 @@ async function generateGiftPoster() {
     const scaleFactor = 2; 
     const finalFontSize = uiFontSize * scaleFactor;
     
-    // Define largura baseada na escolha: 1080 (vertical) ou 1920 (horizontal)
     const width = isVertical ? 1080 : 1920;
     
     const canvas = document.createElement('canvas');
@@ -188,6 +271,31 @@ async function generateGiftPoster() {
     if (!ctx) throw new Error("Contexto 2D não suportado");
 
     ctx.font = `${finalFontSize}px Arial`;
+    
+    // Coleta todos os blocos preenchidos da tela
+    const allBlocks = fieldsContainer.querySelectorAll('.gift-item-block');
+    const giftsData: { category: string, text: string }[] = [];
+    
+    allBlocks.forEach(block => {
+        const textElement = block.querySelector('.gift-textarea') as HTMLTextAreaElement;
+        const activeCatElement = block.querySelector('.cat-btn.active') as HTMLButtonElement;
+        
+        if (textElement && activeCatElement) {
+            const txt = textElement.value.trim();
+            if (txt) {
+                giftsData.push({
+                    category: activeCatElement.getAttribute('data-val') || 'OUTROS',
+                    text: txt
+                });
+            }
+        }
+    });
+
+    if (giftsData.length === 0) {
+        giftsData.push({ category: 'MENSAGEM', text: 'NENHUM CONTEÚDO INFORMADO' });
+    }
+
+    // Cálculo dinâmico da altura total da imagem
     let simulatedY = 120;
     if (churchName || (settings.hymnHeaderType === 'image' && settings.hymnHeaderImage)) {
       simulatedY = 150; 
@@ -199,35 +307,41 @@ async function generateGiftPoster() {
     if (includeDate) simulatedY += 100; 
     else simulatedY += 40;
 
-    // Margens maiores se a imagem for horizontal (TV)
     const sideMargin = isVertical ? 80 : 120;
     const maxTextWidth = width - (sideMargin * 2);
     const lineHeight = finalFontSize * 1.5;
 
-    const finalTextY = wrapText(ctx, content, sideMargin, simulatedY, maxTextWidth, lineHeight, isJustified, false);
-    
-    const requiredHeight = finalTextY + 120; 
+    // Simula a escrita de todos os blocos para calcular a altura exata
+    giftsData.forEach(gift => {
+        ctx.font = '900 48px Arial'; // Título da categoria
+        simulatedY += 80; 
+        ctx.font = `${finalFontSize}px Arial`; // Texto do dom
+        simulatedY = wrapText(ctx, gift.text, sideMargin, simulatedY, maxTextWidth, lineHeight, isJustified, false);
+        simulatedY += 60; // Margem entre dons
+    });
 
-    // Altura base: 1350 para vertical, 1080 para horizontal
+    const requiredHeight = simulatedY + 100; 
     const baseHeight = isVertical ? 1350 : 1080;
     const height = Math.max(baseHeight, requiredHeight);
     
     canvas.width = width;
     canvas.height = height;
 
-    const theme = THEMES[selectedCategory];
+    // Define cor primária baseada no primeiro dom para a borda geral, ou vermelho se não houver
+    const mainThemeColor = giftsData.length > 0 ? (THEMES[giftsData[0].category.toUpperCase() as GiftCategory]?.primary || THEMES.SONHO.primary) : THEMES.SONHO.primary;
 
     ctx.fillStyle = '#FFFFFF';
     ctx.fillRect(0, 0, width, height);
 
-    ctx.strokeStyle = theme.primary;
+    ctx.strokeStyle = mainThemeColor;
     ctx.lineWidth = 15;
     ctx.strokeRect(20, 20, width - 40, height - 40);
 
     let currentY = 120;
 
+    // Cabeçalho - Igreja e Logo
     if (churchName) {
-      ctx.fillStyle = theme.primary;
+      ctx.fillStyle = mainThemeColor;
       ctx.font = 'bold 36px Arial';
       ctx.textAlign = 'center';
       ctx.fillText(churchName, width / 2, currentY);
@@ -247,32 +361,28 @@ async function generateGiftPoster() {
          ctx.drawImage(img, (width - imgWidth) / 2, 40, imgWidth, imgHeight);
          currentY = 150;
        } catch (e) {
-         ctx.fillStyle = theme.primary;
+         ctx.fillStyle = mainThemeColor;
          ctx.font = 'bold 36px Arial';
          ctx.textAlign = 'center';
          ctx.fillText(settings.hymnHeaderText || 'IGREJA CRISTÃ MARANATA', width / 2, currentY);
          currentY += 80;
        }
     } else {
-      ctx.fillStyle = theme.primary;
+      ctx.fillStyle = mainThemeColor;
       ctx.font = 'bold 36px Arial';
       ctx.textAlign = 'center';
       ctx.fillText(settings.hymnHeaderText || 'IGREJA CRISTÃ MARANATA', width / 2, currentY);
       currentY += 80;
     }
 
-    let displayTitle = selectedCategory as string;
-    if (selectedCategory === 'OUTROS' && inputCustomCategory?.value.trim()) {
-      displayTitle = inputCustomCategory.value.trim().toUpperCase();
-    }
-
-    ctx.fillStyle = theme.primary;
+    // Título Principal
+    ctx.fillStyle = mainThemeColor;
     ctx.font = '900 64px Arial';
     ctx.textAlign = 'center';
-    ctx.fillText(displayTitle, width / 2, currentY);
+    ctx.fillText('REGISTRO DE DONS', width / 2, currentY);
     currentY += 40;
 
-    ctx.strokeStyle = theme.primary;
+    ctx.strokeStyle = mainThemeColor;
     ctx.lineWidth = 4;
     ctx.beginPath();
     ctx.moveTo(150, currentY);
@@ -296,11 +406,23 @@ async function generateGiftPoster() {
       currentY += 40;
     }
 
-    ctx.fillStyle = '#0f172a';
-    ctx.font = `${finalFontSize}px Arial`;
-    ctx.textAlign = 'left';
-    
-    wrapText(ctx, content, sideMargin, currentY, maxTextWidth, lineHeight, isJustified, true);
+    // Desenha cada bloco individualmente
+    giftsData.forEach(gift => {
+        const catUpper = gift.category.toUpperCase() as GiftCategory;
+        const blockThemeColor = THEMES[catUpper]?.primary || THEMES.SONHO.primary;
+        
+        ctx.fillStyle = blockThemeColor;
+        ctx.font = '900 48px Arial';
+        ctx.textAlign = 'left';
+        ctx.fillText(`► ${gift.category.toUpperCase()}`, sideMargin, currentY);
+        currentY += 60;
+
+        ctx.fillStyle = '#0f172a';
+        ctx.font = `${finalFontSize}px Arial`;
+        ctx.textAlign = 'left';
+        currentY = wrapText(ctx, gift.text, sideMargin, currentY, maxTextWidth, lineHeight, isJustified, true);
+        currentY += 80; // Margem espaçosa após cada dom
+    });
 
     ctx.textAlign = 'center';
     ctx.fillStyle = '#94a3b8';
@@ -329,7 +451,7 @@ if (btnDownloadGift) {
   btnDownloadGift.addEventListener('click', () => {
     if (!generatedImageUrl) return;
     const link = document.createElement('a');
-    link.download = `dom-${selectedCategory.toLowerCase()}.png`;
+    link.download = `registro-dons.png`;
     link.href = generatedImageUrl;
     link.click();
   });
@@ -341,9 +463,9 @@ if (btnShareGift) {
     try {
       const res = await fetch(generatedImageUrl);
       const blob = await res.blob();
-      const file = new File([blob], `dom-${selectedCategory.toLowerCase()}.png`, { type: "image/png" });
+      const file = new File([blob], `registro-dons.png`, { type: "image/png" });
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        await navigator.share({ files: [file], title: 'Registro de Dom Espiritual' });
+        await navigator.share({ files: [file], title: 'Registro de Dons' });
       } else {
         alert("O compartilhamento direto não é suportado no seu dispositivo. Use o botão Baixar.");
       }
@@ -354,5 +476,4 @@ if (btnShareGift) {
   });
 }
 
-selectCategory('SONHO');
 export {};

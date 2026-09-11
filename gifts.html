@@ -20,44 +20,7 @@
 
       <div class="bg-white rounded-3xl shadow-xl w-full max-w-2xl p-6 md:p-8 space-y-6">
         
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-            <button 
-              id="cat-sonho" 
-              class="py-3 px-4 rounded-xl font-bold text-xs border uppercase text-center transition-all bg-red-50 text-red-700 border-red-200"
-            >
-              Sonho
-            </button>
-            <button 
-              id="cat-visao" 
-              class="py-3 px-4 rounded-xl font-bold text-xs border uppercase text-center transition-all bg-slate-50 text-slate-500 border-slate-200"
-            >
-              Visão
-            </button>
-            <button 
-              id="cat-revelacao" 
-              class="py-3 px-4 rounded-xl font-bold text-xs border uppercase text-center transition-all bg-slate-50 text-slate-500 border-slate-200"
-            >
-              Revelação
-            </button>
-            <button 
-              id="cat-outros" 
-              class="py-3 px-4 rounded-xl font-bold text-xs border uppercase text-center transition-all bg-slate-50 text-slate-500 border-slate-200"
-            >
-            Outros
-            </button>
-          </div>
-
-        <div id="custom-category-container" class="hidden mt-2 mb-2">
-          <label class="text-xs font-bold text-slate-500 block mb-1">Digite aqui o Título</label>
-          <input 
-            type="text" 
-            id="gift-custom-category" 
-            placeholder="Ex: Palavra, Escala, Anotações..." 
-            class="w-full bg-white border border-slate-300 text-slate-600 rounded-lg p-3 outline-none focus:ring-2 focus:ring-slate-400 text-sm uppercase"
-          />
-        </div>
-
-        <div class="space-y-4 pt-2">
+        <div class="space-y-4">
           
           <div>
             <label class="text-xs font-bold text-[#cf2a2a] block mb-1">Nome da Igreja (opcional):</label>
@@ -108,17 +71,52 @@
             <input type="hidden" id="gift-font-size" value="24" />
           </div>
 
-          <div>
-            <textarea 
-              id="gift-content" 
-              rows="6"
-              placeholder="Escreva aqui..." 
-              class="w-full bg-white border border-[#fca5a5] text-slate-600 rounded-lg p-3 outline-none focus:ring-2 focus:ring-red-200 text-sm resize-none"
-            ></textarea>
+          <!-- ÁREA DE MÚLTIPLOS DOMS DINÂMICOS -->
+          <div class="space-y-3 pt-4 border-t border-slate-100">
+            <div class="flex justify-between items-center">
+              <label class="text-sm font-black text-[#8f1919] uppercase tracking-wide">Dons / Mensagens</label>
+              <button 
+                type="button" 
+                id="btn-add-gift-field" 
+                class="bg-emerald-100 text-emerald-700 hover:bg-emerald-200 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-colors shadow-sm"
+              >
+                <i class="fas fa-plus"></i> Adicionar Dom
+              </button>
+            </div>
+
+            <div id="gift-fields-container" class="space-y-4">
+              
+              <!-- BLOCO DE DOM INICIAL (NÃO REMOVÍVEL) -->
+              <div class="gift-item-block bg-slate-50 border border-slate-200 p-4 rounded-xl relative shadow-sm">
+                <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2 block">Categoria</label>
+                <div class="grid grid-cols-4 gap-2 mb-3 category-group">
+                  <button type="button" class="cat-btn active bg-red-50 text-red-700 border border-red-200 py-2 rounded-lg text-[10px] font-bold uppercase transition-colors" data-val="Sonho">Sonho</button>
+                  <button type="button" class="cat-btn bg-white text-slate-500 border border-slate-200 py-2 rounded-lg text-[10px] font-bold uppercase transition-colors" data-val="Visão">Visão</button>
+                  <button type="button" class="cat-btn bg-white text-slate-500 border border-slate-200 py-2 rounded-lg text-[10px] font-bold uppercase transition-colors" data-val="Revelação">Revelação</button>
+                  <button type="button" class="cat-btn bg-white text-slate-500 border border-slate-200 py-2 rounded-lg text-[10px] font-bold uppercase transition-colors" data-val="Outros">Outros</button>
+                </div>
+                <div class="relative">
+                  <textarea 
+                    rows="4"
+                    placeholder="Escreva aqui ou use o microfone para ditar..." 
+                    class="gift-textarea w-full bg-white border border-[#fca5a5] text-slate-600 rounded-lg p-3 pr-12 outline-none focus:ring-2 focus:ring-red-200 text-sm resize-none"
+                  ></textarea>
+                  <button 
+                    type="button" 
+                    title="Ditar dom por voz"
+                    class="btn-voice-don absolute right-3 top-3 w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors"
+                  >
+                    <i class="fas fa-microphone"></i>
+                  </button>
+                </div>
+              </div>
+              
+            </div>
           </div>
+
         </div>
 
-        <div class="flex flex-col gap-3 mt-2">
+        <div class="flex flex-col gap-3 mt-4 border-t border-slate-100 pt-6">
           <button 
             id="btn-generate-gift" 
             class="w-full bg-[#94a3b8] text-white font-bold py-3 rounded-lg shadow-sm flex items-center justify-center gap-2 hover:bg-slate-500 transition-colors"
@@ -126,11 +124,13 @@
             <i class="fas fa-image"></i> Gerar Imagem
           </button>
           
-          <a href="/index.html" class="w-full bg-white text-[#cf2a2a] font-bold py-3 rounded-lg border border-[#cf2a2a] shadow-sm flex items-center justify-center gap-2 hover:bg-red-50 transition-colors">
+          <a href="/home.html" class="w-full bg-white text-[#cf2a2a] font-bold py-3 rounded-lg border border-[#cf2a2a] shadow-sm flex items-center justify-center gap-2 hover:bg-red-50 transition-colors">
             <i class="fas fa-arrow-left"></i> Voltar
           </a>
         </div>
-      </div> <div id="gift-preview-section" class="w-full max-w-2xl mt-6 bg-white rounded-2xl shadow-xl p-6 border border-[#fca5a5] hidden">
+      </div> 
+
+      <div id="gift-preview-section" class="w-full max-w-2xl mt-6 bg-white rounded-2xl shadow-xl p-6 border border-[#fca5a5] hidden">
         <h3 class="text-[#cf2a2a] font-bold text-lg mb-4 text-center uppercase tracking-wide">Visualização do Cartaz</h3>
         <div class="bg-slate-50 p-2 rounded-xl flex justify-center mb-6 border border-slate-200">
           <img id="gift-preview-image" alt="Preview Cartaz" class="max-w-full h-auto shadow-sm rounded-lg" />
@@ -143,7 +143,74 @@
             <i class="fas fa-download text-xl"></i> Baixar
           </button>
         </div>
-      </div> </div>
+      </div> 
+    </div>
+
+    <!-- Script de Controle Visual (Adicionar/Apagar blocos e alternar botões) -->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const container = document.getElementById('gift-fields-container');
+
+        // Função que aplica a cor no botão selecionado de categoria dentro do seu próprio bloco
+        function setupCategoryButtons(block) {
+          const catBtns = block.querySelectorAll('.cat-btn');
+          catBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+              catBtns.forEach(b => {
+                b.classList.remove('bg-red-50', 'text-red-700', 'border-red-200', 'active');
+                b.classList.add('bg-white', 'text-slate-500', 'border-slate-200');
+              });
+              btn.classList.add('bg-red-50', 'text-red-700', 'border-red-200', 'active');
+              btn.classList.remove('bg-white', 'text-slate-500', 'border-slate-200');
+            });
+          });
+        }
+
+        // Inicializa o primeiro bloco que já está na tela
+        setupCategoryButtons(container.firstElementChild);
+
+        // Adicionar novo bloco dinâmico
+        document.getElementById('btn-add-gift-field').addEventListener('click', () => {
+          const row = document.createElement('div');
+          row.className = 'gift-item-block bg-slate-50 border border-slate-200 p-4 rounded-xl relative shadow-sm animate-in fade-in duration-200';
+          
+          row.innerHTML = `
+            <button type="button" class="btn-remove-gift absolute -top-3 -right-3 w-8 h-8 rounded-full bg-red-100 text-red-600 hover:bg-red-500 hover:text-white transition-colors flex items-center justify-center shadow-md border border-white z-10" title="Remover Dom">
+              <i class="fas fa-times"></i>
+            </button>
+            <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2 block">Categoria</label>
+            <div class="grid grid-cols-4 gap-2 mb-3 category-group">
+              <button type="button" class="cat-btn active bg-red-50 text-red-700 border border-red-200 py-2 rounded-lg text-[10px] font-bold uppercase transition-colors" data-val="Sonho">Sonho</button>
+              <button type="button" class="cat-btn bg-white text-slate-500 border border-slate-200 py-2 rounded-lg text-[10px] font-bold uppercase transition-colors" data-val="Visão">Visão</button>
+              <button type="button" class="cat-btn bg-white text-slate-500 border border-slate-200 py-2 rounded-lg text-[10px] font-bold uppercase transition-colors" data-val="Revelação">Revelação</button>
+              <button type="button" class="cat-btn bg-white text-slate-500 border border-slate-200 py-2 rounded-lg text-[10px] font-bold uppercase transition-colors" data-val="Outros">Outros</button>
+            </div>
+            <div class="relative">
+              <textarea 
+                rows="4" 
+                placeholder="Escreva aqui ou use o microfone para ditar..." 
+                class="gift-textarea w-full bg-white border border-[#fca5a5] text-slate-600 rounded-lg p-3 pr-12 outline-none focus:ring-2 focus:ring-red-200 text-sm resize-none"
+              ></textarea>
+              <button 
+                type="button" 
+                title="Ditar dom por voz"
+                class="btn-voice-don absolute right-3 top-3 w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors"
+              >
+                <i class="fas fa-microphone"></i>
+              </button>
+            </div>
+          `;
+          
+          // Função para deletar bloco adicionado
+          row.querySelector('.btn-remove-gift').addEventListener('click', () => {
+            row.remove();
+          });
+
+          container.appendChild(row);
+          setupCategoryButtons(row); // Configura seleção de categoria do bloco novo
+        });
+      });
+    </script>
 
     <script type="module" src="/gifts.ts"></script>
   </body>

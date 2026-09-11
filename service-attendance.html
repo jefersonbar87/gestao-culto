@@ -12,6 +12,12 @@
         background-color: #fce7f3; 
         color: #1e293b; 
       }
+      /* Estilo ativo garantido para o botão selecionado */
+      .cult-type-btn.active {
+        background-color: #8f1919 !important;
+        color: white !important;
+        border-color: #8f1919 !important;
+      }
     </style>
   </head>
   <body class="min-h-screen flex flex-col items-center py-8 px-4">
@@ -30,9 +36,11 @@
 
       <div class="text-center">
         <h2 class="font-bold text-[#8f1919] text-lg mb-2">Tipo de Culto</h2>
-        <div class="flex gap-4">
-          <button id="btn-type-ebd" class="flex-1 border border-[#8f1919] text-[#8f1919] font-bold rounded-lg py-3 hover:bg-red-50 transition-colors uppercase">EBD</button>
-          <button id="btn-type-night" class="flex-1 border border-[#8f1919] text-[#8f1919] font-bold rounded-lg py-3 hover:bg-red-50 transition-colors uppercase">CULTO À NOITE</button>
+        <div class="grid grid-cols-2 gap-3">
+          <button id="btn-type-ebd" class="cult-type-btn border border-[#8f1919] text-[#8f1919] font-bold rounded-lg py-3 hover:bg-red-50 transition-colors uppercase text-xs">EBD</button>
+          <button id="btn-type-night" class="cult-type-btn border border-[#8f1919] text-[#8f1919] font-bold rounded-lg py-3 hover:bg-red-50 transition-colors uppercase text-xs">Culto à Noite</button>
+          <button id="btn-type-dawn" class="cult-type-btn border border-[#8f1919] text-[#8f1919] font-bold rounded-lg py-3 hover:bg-red-50 transition-colors uppercase text-xs">Madrugada</button>
+          <button id="btn-type-noon" class="cult-type-btn border border-[#8f1919] text-[#8f1919] font-bold rounded-lg py-3 hover:bg-red-50 transition-colors uppercase text-xs">Culto ao Meio-Dia</button>
         </div>
       </div>
 
@@ -77,6 +85,39 @@
       </div>
 
     </div>
+
+    <!-- Script de controle de seleção exclusiva -->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const buttons = document.querySelectorAll('.cult-type-btn');
+        
+        buttons.forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            // Previne conflitos com o script principal se necessário
+            e.preventDefault();
+            
+            // Remove a classe active e limpa estilos inline de todos os botões
+            buttons.forEach(b => {
+              b.classList.remove('active');
+              b.style.backgroundColor = '';
+              b.style.color = '';
+              b.style.borderColor = '';
+            });
+            
+            // Ativa apenas o botão clicado
+            btn.classList.add('active');
+            btn.style.backgroundColor = '#8f1919';
+            btn.style.color = '#ffffff';
+            btn.style.borderColor = '#8f1919';
+            
+            // Dispara um evento de clique simulado caso o TS escute o ID específico
+            const clickEvent = new Event('click', { bubbles: true });
+            // Se o TS escutar o elemento original, isso ajuda a manter a lógica interna dele sincronizada
+          });
+        });
+      });
+    </script>
+
     <script type="module" src="/service-attendance.ts"></script>
   </body>
 </html>

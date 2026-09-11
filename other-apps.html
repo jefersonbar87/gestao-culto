@@ -28,47 +28,7 @@
 
     <div class="max-w-md w-full space-y-5">
 
-      <div>
-        <button onclick="toggleMenuDados()"
-          class="w-full bg-white p-5 rounded-[1.8rem] shadow-md hover:shadow-lg transition-all duration-300 text-left flex items-center justify-between gap-5 border border-white/50 active:scale-[0.98] block">
-          <div class="flex items-center gap-5">
-            <div class="w-16 h-16 rounded-2xl bg-red-100 flex items-center justify-center text-[#8f1919] shrink-0">
-              <i class="fas fa-book-open text-2xl"></i>
-            </div>
-            <div class="flex flex-col">
-              <h3 class="text-2xl font-bold text-[#8f1919] leading-tight">Dados do Culto</h3>
-              <p class="text-red-400 text-base font-medium">Relatórios e presenças</p>
-            </div>
-          </div>
-          <div class="text-[#8f1919] mr-2">
-            <i id="seta-dados" class="fas fa-chevron-down transition-transform duration-300"></i>
-          </div>
-        </button>
-
-        <div id="submenu-dados" class="hidden flex-col gap-3 mt-3 px-2">
-          <a href="/service-data.html"
-            class="w-full bg-red-50/80 p-4 rounded-2xl shadow-sm hover:shadow-md transition-all text-left flex items-center gap-4 border border-red-100 active:scale-[0.98]">
-            <div class="w-12 h-12 rounded-xl bg-white flex items-center justify-center text-[#8f1919] shrink-0">
-              <i class="fas fa-file-alt text-lg"></i>
-            </div>
-            <div>
-              <h4 class="text-lg font-bold text-[#8f1919] leading-tight">Dados Gerais do Culto</h4>
-            </div>
-          </a>
-
-          <a href="/service-attendance.html"
-            class="w-full bg-red-50/80 p-4 rounded-2xl shadow-sm hover:shadow-md transition-all text-left flex items-center gap-4 border border-red-100 active:scale-[0.98]">
-            <div class="w-12 h-12 rounded-xl bg-white flex items-center justify-center text-[#8f1919] shrink-0">
-              <i class="fas fa-users text-lg"></i>
-            </div>
-            <div>
-              <h4 class="text-lg font-bold text-[#8f1919] leading-tight">Lista de Presença</h4>
-            </div>
-          </a>
-        </div>
-      </div>
-
-      <!-- Botão Trombetas & Festas Atualizado -->
+      <!-- Botão Trombetas & Festas -->
       <a href="/trombetas.html"
         class="w-full bg-white p-5 rounded-[1.8rem] shadow-md hover:shadow-lg transition-all duration-300 text-left flex items-center gap-5 border border-white/50 active:scale-[0.98] block">
         <div class="w-16 h-16 rounded-2xl bg-red-100 flex items-center justify-center shrink-0 p-2.5">
@@ -80,6 +40,7 @@
         </div>
       </a>
 
+      <!-- Botão Oração Ininterrupta -->
       <a href="https://oracao24hicm.web.app" target="_blank" rel="noopener noreferrer"
         class="w-full bg-white p-5 rounded-[1.8rem] shadow-md hover:shadow-lg transition-all duration-300 text-left flex items-center gap-5 border border-white/50 active:scale-[0.98] block">
         <div class="w-16 h-16 rounded-2xl bg-red-100 flex items-center justify-center text-[#8f1919] shrink-0">
@@ -90,6 +51,7 @@
           <p class="text-red-400 text-base font-medium">Escala e horários de clamor</p>
         </div>
       </a>
+      
     </div>
 
     <div class="max-w-md w-full mt-8">
@@ -98,23 +60,6 @@
         ao Início</a>
     </div>
   </div>
-
-  <script>
-    function toggleMenuDados() {
-      const submenu = document.getElementById('submenu-dados');
-      const seta = document.getElementById('seta-dados');
-
-      if (submenu.classList.contains('hidden')) {
-        submenu.classList.remove('hidden');
-        submenu.classList.add('flex');
-        seta.style.transform = 'rotate(180deg)';
-      } else {
-        submenu.classList.add('hidden');
-        submenu.classList.remove('flex');
-        seta.style.transform = 'rotate(0deg)';
-      }
-    }
-  </script>
 </body>
 
 </html>

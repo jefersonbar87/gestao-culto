@@ -3,110 +3,116 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Suporte Técnico - ICM</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#8f1919" />
+  <title>Suporte e Ajuda - Gestão Culto Profético</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
     body {
       font-family: 'Inter', sans-serif;
-      background-color: #f8fafc;
+      background-color: #1a0505;
+      background-image: url('./fundo-igreja.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
       color: #1e293b;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .glass-card-pro {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 10px 25px -8px rgba(0, 0, 0, 0.4), 0 0 10px rgba(255, 255, 255, 0.25) inset;
+      border: 1.5px solid rgba(255, 255, 255, 0.85);
+      transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .glass-card-pro:active {
+      transform: scale(0.98);
     }
   </style>
 </head>
 
-<body>
-  <div class="min-h-screen bg-slate-50 flex flex-col items-center pt-8 pb-12 px-4">
-    <header class="w-full max-w-2xl flex items-center justify-between mb-6">
-      <div class="flex items-center gap-4">
-        <a href="/home.html"
-          class="text-[#8f1919] p-2 bg-white rounded-full shadow-sm flex items-center justify-center w-10 h-10">
-          <i class="fas fa-arrow-left"></i>
+<body class="flex flex-col items-center pt-6 pb-12 px-5">
+  
+  <!-- CABEÇALHO -->
+  <header class="w-full max-w-md flex items-center gap-4 mb-6">
+    <a href="/home.html" class="text-[#8f1919] p-2.5 bg-white/90 rounded-full shadow-md flex items-center justify-center w-11 h-11 active:scale-95 transition-transform">
+      <i class="fas fa-arrow-left text-lg"></i>
+    </a>
+    <h1 class="text-xl md:text-2xl font-black text-white uppercase tracking-wide drop-shadow-md">Suporte & Ajuda</h1>
+  </header>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <main class="max-w-md w-full flex flex-col gap-4">
+    
+    <!-- CARD 1: Falar com o Desenvolvedor (WhatsApp) -->
+    <a href="https://wa.me/5527998863709?text=Olá!%20Estou%20entrando%20em%20contato%20através%20do%20aplicativo%20Gestão%20Culto%20Profético." 
+       target="_blank" rel="noopener noreferrer" 
+       class="w-full glass-card-pro p-5 rounded-[1.8rem] flex items-center gap-4 group">
+      <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center text-white text-2xl shadow-md shrink-0 group-hover:scale-105 transition-transform">
+        <i class="fab fa-whatsapp"></i>
+      </div>
+      <div class="flex flex-col">
+        <h3 class="text-base font-extrabold text-[#7f1d1d] leading-tight">Dúvidas & Sugestões</h3>
+        <p class="text-slate-600 text-xs font-semibold mt-0.5">Falar diretamente com o desenvolvedor</p>
+        <span class="text-emerald-600 text-[11px] font-bold mt-1 flex items-center gap-1">
+          <i class="fas fa-comment-dots"></i> Enviar mensagem no WhatsApp
+        </span>
+      </div>
+    </a>
+
+    <!-- CARD 2: Sobre o Aplicativo -->
+    <div class="w-full glass-card-pro p-6 rounded-[1.8rem] flex flex-col gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center text-[#8f1919] shadow-sm shrink-0">
+          <i class="fas fa-church text-base"></i>
+        </div>
+        <h3 class="text-base font-extrabold text-[#7f1d1d]">Sobre o Aplicativo</h3>
+      </div>
+      <p class="text-slate-700 text-xs md:text-sm font-medium leading-relaxed text-justify">
+        O sistema <strong>Gestão Culto Profético</strong> foi desenvolvido com muito carinho para auxiliar os irmãos e cooperadores nas atividades da igreja. Nosso objetivo é substituir o uso de papéis pelo ambiente digital, trazendo mais agilidade, organização e facilidade para a obra. Tudo para a honra e glória ao Senhor Jesus! 🙌✨
+      </p>
+    </div>
+
+    <!-- CARD 3: Sobre o Desenvolvedor (JefTecnologias) -->
+    <div class="w-full glass-card-pro p-6 rounded-[1.8rem] flex flex-col gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-cyan-100 flex items-center justify-center text-[#00b4d8] shadow-sm shrink-0">
+          <i class="fas fa-code text-base"></i>
+        </div>
+        <h3 class="text-base font-extrabold text-[#7f1d1d]">Desenvolvido por</h3>
+      </div>
+      <div class="flex flex-col gap-2">
+        <div class="text-sm font-black tracking-tight flex items-center">
+          <span class="text-slate-900 font-extrabold">Jef</span><span class="text-[#00b4d8] font-black">Tecnologias</span>
+        </div>
+        <p class="text-slate-600 text-xs font-medium leading-relaxed">
+          Especialistas em soluções inteligentes e modernas para otimizar processos e transformar ideias em realidade.
+        </p>
+        <a href="https://pagina-jeftecnologias.pagina-jeftecnologias.workers.dev" target="_blank" rel="noopener noreferrer"
+           class="mt-1 text-[#00b4d8] hover:underline text-xs font-bold flex items-center gap-1.5">
+          <i class="fas fa-globe"></i> www.jeftecnologias.com.br
         </a>
-        <h1 class="text-2xl font-bold text-[#8f1919] uppercase">Suporte Técnico</h1>
-      </div>
-
-      <!-- Toggle mode button: Chat / Voice -->
-      <div class="flex bg-slate-200 p-1 rounded-xl">
-        <button id="tab-chat"
-          class="px-4 py-1.5 rounded-lg text-xs font-bold uppercase transition-all bg-white text-slate-800 shadow-sm">
-          Chat
-        </button>
-        <button id="tab-voice"
-          class="px-4 py-1.5 rounded-lg text-xs font-bold uppercase transition-all text-slate-500 hover:text-slate-800">
-          Voz (Beta)
-        </button>
-      </div>
-    </header>
-
-    <div
-      class="bg-white rounded-3xl shadow-xl w-full max-w-2xl flex flex-col h-[32rem] overflow-hidden border border-slate-100">
-      <!-- 1. Text Chat View -->
-      <div id="view-chat" class="flex-1 flex flex-col h-full">
-        <!-- Messages container -->
-        <div id="chat-messages" class="flex-1 p-6 overflow-y-auto space-y-4 bg-slate-50/50">
-          <!-- Initial AI Greeting -->
-          <div class="flex items-start gap-3">
-            <div class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center text-[#8f1919] shrink-0 mt-1">
-              <i class="fas fa-robot text-sm"></i>
-            </div>
-            <div class="bg-white p-3.5 rounded-2xl rounded-tl-none shadow-sm border border-slate-100 max-w-[80%]">
-              <p class="text-sm text-slate-700">Olá! Eu sou o assistente do Sistema Culto Profético. Posso ajudar você
-                com dúvidas sobre Louvores, Dons, Relatório do Culto, Trombetas ou Oração. Como posso ajudar?</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Bottom Text Input -->
-        <form id="form-chat" class="p-4 border-t flex gap-2 items-center bg-white">
-          <input type="text" id="input-msg" placeholder="Digite sua dúvida aqui..." required
-            class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-red-100" />
-          <button type="submit"
-            class="w-11 h-11 bg-[#8f1919] text-white rounded-xl flex items-center justify-center shadow-md active:scale-95 transition-all shrink-0">
-            <i class="fas fa-paper-plane"></i>
-          </button>
-        </form>
-      </div>
-
-      <!-- 2. Voice/Live Audio Assistant View -->
-      <div id="view-voice"
-        class="hidden flex-1 flex flex-col items-center justify-center p-8 text-center space-y-8 h-full bg-red-50/10">
-        <div class="space-y-2">
-          <h3 class="text-xl font-bold text-[#8f1919]">Assistente por Voz</h3>
-          <p class="text-slate-400 text-xs">Converse diretamente por voz em tempo real sobre o sistema</p>
-        </div>
-
-        <!-- Microphone trigger and wave effect -->
-        <div class="relative flex items-center justify-center">
-          <!-- Ripple layers -->
-          <div id="voice-ripple-1"
-            class="absolute w-28 h-28 bg-red-500/10 rounded-full scale-100 transition-all duration-300 hidden"></div>
-          <div id="voice-ripple-2"
-            class="absolute w-36 h-36 bg-red-500/5 rounded-full scale-100 transition-all duration-300 hidden"></div>
-
-          <button id="btn-voice-toggle"
-            class="w-20 h-20 bg-[#8f1919] text-white rounded-full flex items-center justify-center text-3xl shadow-xl hover:bg-red-800 transition-all z-10 active:scale-95">
-            <i class="fas fa-microphone"></i>
-          </button>
-        </div>
-
-        <div class="space-y-2">
-          <p id="voice-status" class="text-sm font-bold text-red-500">Toque no botão para iniciar conversa</p>
-          <p class="text-[10px] text-slate-400 max-w-xs mx-auto">Para encerrar a conversa, toque no microfone novamente.
-          </p>
-        </div>
       </div>
     </div>
 
-    <div class="w-full max-w-2xl mt-6">
-      <a href="/home.html"
-        class="w-full bg-white text-[#8f1919] font-bold py-3 rounded-xl border border-red-200 block text-center shadow-sm">Voltar
-        ao Início</a>
-    </div>
+  </main>
+
+  <!-- BOTÃO VOLTAR -->
+  <div class="max-w-md w-full mt-6">
+    <a href="/home.html"
+      class="w-full glass-card-pro text-[#7f1d1d] font-extrabold py-3.5 rounded-2xl block text-center shadow-lg active:scale-95 transition-all">
+      <i class="fas fa-arrow-left mr-2"></i> Voltar ao Início
+    </a>
   </div>
 
-  <script type="module" src="/chat.ts"></script>
 </body>
 
 </html>
